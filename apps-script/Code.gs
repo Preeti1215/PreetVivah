@@ -3,7 +3,7 @@
 // -> type "Web app", Execute as "Me", Who has access "Anyone" -> copy the /exec URL into
 // RSVP_SHEET_URL in index.html.
 
-const HEADERS = ['Received', 'Name', 'Attending', 'Guests', 'Arrival', 'Travel', 'Note', 'Invite link name'];
+const HEADERS = ['Date & time (IST)', 'Name', 'Attending', 'Guests', 'Arrival', 'Travel', 'Note', 'Invite link name'];
 const ATTENDING = { yes: 'Joyfully accepts', maybe: 'Hoping to make it', no: 'Celebrating from afar' };
 
 function save_(p) {
@@ -19,7 +19,7 @@ function save_(p) {
     if (!name) return;
     const attending = p.attending || '';
     const row = [
-      new Date(), name, ATTENDING[attending] || attending,
+      Utilities.formatDate(new Date(), 'Asia/Kolkata', 'dd MMM yyyy, hh:mm a'), name, ATTENDING[attending] || attending,
       attending === 'no' ? '' : p.count || '', attending === 'no' ? '' : p.arrival || '',
       attending === 'no' ? '' : p.travel || '', p.note || '', p.guest || ''
     ];

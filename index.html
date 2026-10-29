@@ -1289,9 +1289,10 @@
 
         <fieldset class="field">
           <legend>Will you join us?</legend>
-          <div class="choices">
+          <div class="choices choices--3">
             <label class="choice"><input type="radio" name="attending" id="rsvp-yes" value="yes" checked><span>Joyfully accepts</span></label>
-            <label class="choice"><input type="radio" name="attending" id="rsvp-no" value="no"><span>Regretfully declines</span></label>
+            <label class="choice"><input type="radio" name="attending" id="rsvp-maybe" value="maybe"><span>Maybe</span></label>
+            <label class="choice"><input type="radio" name="attending" id="rsvp-no" value="no"><span>Celebrating from afar</span></label>
           </div>
         </fieldset>
 
@@ -1647,8 +1648,11 @@
     const lines = ['RSVP: Preeti & Vivek\'s wedding', '', 'Name: ' + r.name];
     if (r.attending === 'yes') {
       lines.push('Joyfully accepts 🙏', 'Guests: ' + r.count, 'Arriving: ' + r.day + ', around ' + r.time, 'Travelling by: ' + r.travel);
+    } else if (r.attending === 'maybe') {
+      lines.push('Hoping to make it, will confirm soon 🤞', 'Guests: ' + r.count, 'Arriving: ' + r.day + ', around ' + r.time);
+      if (r.travel) lines.push('Travelling by: ' + r.travel);
     } else {
-      lines.push('Regretfully declines, sending our blessings.');
+      lines.push('Sorry to miss it. Celebrating from afar and sending our love and blessings 💐');
     }
     if (r.note) lines.push('', 'Note: ' + r.note);
     return lines.join('\n');
@@ -1675,7 +1679,8 @@
   function showDone(r) {
     const msg = compose(r);
     $('rsvp-message').textContent = msg;
-    $('rsvp-thanks').textContent = r.attending === 'yes' ? 'See you there, ' + r.name.split(' ')[0] + '!' : 'We will miss you, ' + r.name.split(' ')[0];
+    const first = r.name.split(' ')[0];
+    $('rsvp-thanks').textContent = r.attending === 'yes' ? 'See you there, ' + first + '!' : r.attending === 'maybe' ? 'Hope to see you, ' + first + '!' : 'We will miss you, ' + first;
     $('rsvp-whatsapp').href = 'https://wa.me/' + RSVP_WHATSAPP + '?text=' + encodeURIComponent(msg);
     $('rsvp-whatsapp').textContent = RSVP_SHEET_URL ? 'Also send on WhatsApp' : 'Send on WhatsApp';
     $('rsvp-whatsapp').classList.toggle('btn--solid', !RSVP_SHEET_URL);
@@ -1704,7 +1709,7 @@
     const r = {
       name: $('rsvp-name').value.trim(),
       count: $('rsvp-count').value,
-      attending: $('rsvp-yes').checked ? 'yes' : 'no',
+      attending: form.querySelector('input[name="attending"]:checked').value,
       day: $('rsvp-day').value,
       time: $('rsvp-time').value,
       travel: (form.querySelector('input[name="travel"]:checked') || {}).value || '',
@@ -1726,7 +1731,7 @@
   if (saved && saved.name) {
     $('rsvp-name').value = saved.name;
     $('rsvp-count').value = saved.count;
-    (saved.attending === 'no' ? $('rsvp-no') : $('rsvp-yes')).checked = true;
+    ($({ no: 'rsvp-no', maybe: 'rsvp-maybe' }[saved.attending] || 'rsvp-yes')).checked = true;
     if (saved.day) $('rsvp-day').value = saved.day;
     if (saved.time) $('rsvp-time').value = saved.time;
     form.querySelectorAll('input[name="travel"]').forEach(i => i.checked = i.value === saved.travel);

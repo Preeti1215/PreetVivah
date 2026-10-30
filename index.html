@@ -1,5 +1,6 @@
 <!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <title>Preeti &amp; Vivek</title>
+<script>if (new URLSearchParams(location.search).get('lang') === 'hi') location.replace('hi.html' + location.hash);</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Pinyon+Script&family=Tiro+Devanagari+Sanskrit&display=swap">
@@ -707,6 +708,9 @@
   .host h2 { font-size: var(--step-1); }
   .host p { font-size: 0.98rem; }
   .host .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  .lang-toggle { position: fixed; z-index: 60; top: max(12px, env(safe-area-inset-top, 0px)); right: max(12px, env(safe-area-inset-right, 0px)); padding: 7px 14px; border: 1px solid var(--bronze-soft); border-radius: 999px; background: color-mix(in srgb, var(--paper) 92%, transparent); backdrop-filter: blur(6px); box-shadow: 0 10px 30px -18px #6b4220aa; font-family: var(--font-display); font-size: .8rem; color: var(--bronze); text-decoration: none; }
+  .lang-toggle:hover { background: var(--bronze); color: var(--paper); }
+  .host select { font: inherit; padding: 9px 12px; border: 1px solid var(--bronze-soft); border-radius: 10px; background: #fffdf8; color: var(--bronze-deep); }
   .host .host-max { flex: 0 1 130px; }
   .host input { flex: 1 1 240px; min-width: 0; font: inherit; padding: 9px 14px; border: 1px solid var(--bronze-soft); border-radius: 10px; background: #fffdf8; color: var(--bronze-deep); }
   .host output { display: block; overflow-wrap: anywhere; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.85rem; padding: 10px 12px; background: var(--paper-deep); border-radius: 8px; color: var(--bronze-deep); }
@@ -1026,6 +1030,7 @@
 </div>
 <canvas id="petals" aria-hidden="true"></canvas>
 <button class="music" id="music-btn" type="button" aria-pressed="false"><span class="eq" aria-hidden="true"><i></i><i></i><i></i></span><span id="music-label">Play music</span></button>
+<a class="lang-toggle" id="lang-toggle" href="hi.html" lang="hi" hreflang="hi">हिन्दी</a>
 
 <nav class="tabbar" aria-label="Sections">
   <a class="tab" href="#invite"><svg viewBox="0 0 40 24" aria-hidden="true"><use href="#lotus"/></svg>Invite</a>
@@ -1361,10 +1366,11 @@
 
   <aside class="host" id="host" hidden>
     <h2>Personal invitation links</h2>
-    <p>Only you see this panel. Type a guest's name to get a link that greets them by name on the opening curtain and fills in their RSVP. Set the most guests they can bring; leave it blank for the default of 6.</p>
+    <p>Only you see this panel. Type a guest's name to get a link that greets them by name on the opening curtain and fills in their RSVP. Set the most guests they can bring (blank = 6) and the language of the invite.</p>
     <div class="row">
       <input type="text" id="host-name" placeholder="e.g. Riya & Family" aria-label="Guest name">
       <input type="number" id="host-max" class="host-max" min="1" max="20" placeholder="Max guests" aria-label="Maximum guests">
+      <select id="host-lang" aria-label="Invitation language"><option value="en">English</option><option value="hi">हिन्दी</option></select>
       <button class="btn btn--solid" type="button" id="host-copy">Copy link</button>
     </div>
     <output id="host-link"></output>
@@ -1377,6 +1383,7 @@
   // ---- Settings you can change ----
   // used for personal links; on your own site (e.g. GitHub Pages) it picks up that address automatically
   const SITE_URL = /claude\.ai$|claudeusercontent|^$/.test(location.hostname) ? 'https://claude.ai/artifact/B9oJznPErYZHz5gShCeSMi' : location.origin + location.pathname;
+  const SITE_BASE = SITE_URL.replace(/\/(?:index|hi)(?:\.html)?$/, '/');   // folder holding both language versions
   const RSVP_WHATSAPP = '';   // host's WhatsApp number with country code, digits only, e.g. '919876543210'. Empty = guest picks a chat.
   const RSVP_SHEET_URL = ''; // Google Apps Script web app /exec URL (see apps-script/Code.gs). Empty = WhatsApp only.
   const PHOTOS_URL = '';      // Google Drive folder link where guests add the moments they captured. Empty = "coming soon".
@@ -1399,12 +1406,12 @@
     get(k) { try { return sessionStorage.getItem(k); } catch { return null; } },
     set(k, v) { try { sessionStorage.setItem(k, v); } catch {} }
   };
-  const nameToSlug = name => 'for-' + name.trim().replace(/&/g, ' and ').replace(/[^A-Za-z0-9.\s]/g, '').trim().split(/\s+/).join('-');
+  const nameToSlug = name => 'for-' + name.trim().replace(/&/g, ' and ').replace(/[^A-Za-z0-9.\s\u0900-\u097F]/g, '').trim().split(/\s+/).join('-');
   const slugToName = slug => slug.replace(/^for-/, '').split('-').filter(Boolean).map(w => w.toLowerCase() === 'and' ? '&' : w).join(' ');
   // Optional guest limit: …#for-Riya-and-Family&max=4
   let guest = '', maxGuests = 6;
   const hash = decodeURIComponent(location.hash.slice(1));
-  const link = hash.match(/^(for-[A-Za-z0-9.-]+)(?:&max=(\d{1,2}))?$/);
+  const link = hash.match(/^(for-[A-Za-z0-9.\u0900-\u097F-]+)(?:&max=(\d{1,2}))?$/);
   if (link) {
     guest = slugToName(link[1]);
     store.set('guest', guest); store.set('max', link[2] || '');
@@ -1416,6 +1423,9 @@
     $('dear').textContent = 'Dear ' + guest + ',';
     $('dear').hidden = false;
   }
+  const langLink = $('lang-toggle');   // switch language, keeping the current section or guest link
+  const syncLang = () => { langLink.href = (document.documentElement.lang === 'hi' ? './' : 'hi.html') + location.hash; };
+  syncLang(); addEventListener('hashchange', syncLang);
   const page = document.getElementById('page');
   const gate = document.getElementById('gate');
 
@@ -1779,8 +1789,11 @@
     const update = () => {
       const n = $('host-name').value.trim();
       const m = Math.min(parseInt($('host-max').value, 10), 20);
-      $('host-link').textContent = n ? SITE_URL + '#' + nameToSlug(n) + (m >= 1 ? '&max=' + m : '') : SITE_URL;
+      const base = $('host-lang').value === 'hi' ? SITE_BASE + 'hi.html' : SITE_BASE;
+      $('host-link').textContent = n ? base + '#' + nameToSlug(n) + (m >= 1 ? '&max=' + m : '') : base;
     };
+    $('host-lang').value = document.documentElement.lang === 'hi' ? 'hi' : 'en';
+    $('host-lang').addEventListener('change', update);
     $('host-name').addEventListener('input', update);
     $('host-max').addEventListener('input', update);
     $('host-copy').addEventListener('click', () => copyText($('host-link').textContent, $('host-link'), $('host-status'), 'Link copied.'));

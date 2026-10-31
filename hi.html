@@ -218,7 +218,7 @@
     animation: foil 6s ease-in-out 2.4s infinite;
   }
   .name .ch { display: inline-block; }
-  .and { font-size: var(--step-3); line-height: 1; display: flex; align-items: center; gap: 16px; }
+  .and { font-size: clamp(0.9rem, 0.8rem + calc(0.5 * var(--vw)), 1.15rem); line-height: 1; display: flex; align-items: center; gap: 16px; }
   .and::before, .and::after { content: ""; width: clamp(40px, calc(10 * var(--vw)), 110px); height: 1px; background: var(--bronze-soft); }
   .parents { font-family: var(--font-display); font-size: clamp(0.72rem, 0.66rem + calc(0.3 * var(--vw)), 0.9rem); letter-spacing: 0.06em; line-height: 1.8; color: var(--bronze-deep); }
   .parents abbr { text-decoration: none; color: var(--bronze); margin-right: 6px; }

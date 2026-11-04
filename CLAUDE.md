@@ -38,7 +38,6 @@ Also: `#petals` canvas animation and the `#music-btn` toggle (plays `MUSIC_SRC`,
 ## Settings (top of the `<script>` in index.html)
 
 - `SITE_URL`: base for personal links; uses `location` automatically except inside claude.ai.
-- `RSVP_WHATSAPP`: host number, digits with country code. Empty = guest picks a chat.
 - `RSVP_SHEET_URL`: Google Apps Script `/exec` URL; RSVPs are POSTed with `mode: 'no-cors'`. Empty = WhatsApp only. The script to deploy is `apps-script/Code.gs`.
 - `PHOTOS_URL`: Google Drive folder for guest photos. Empty = "Photo link coming soon".
 - `MUSIC_SRC`: audio path relative to `index.html`.

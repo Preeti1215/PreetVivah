@@ -697,6 +697,8 @@
   .form-error { text-align: center; color: var(--rose); font-style: italic; }
   .rsvp-done { max-width: 620px; margin: 0 auto; display: grid; gap: 18px; justify-items: center; text-align: center; }
   .rsvp-done h3 { font-family: var(--font-script); font-weight: 400; font-size: var(--step-3); }
+  .rsvp-reply { max-width: 34ch; line-height: 1.6; font-size: 1.1rem; }
+  .rsvp-reply-end { font-family: var(--font-script); font-size: 1.9rem; line-height: 1.2; color: var(--bronze); }
   .rsvp-done pre {
     width: 100%; box-sizing: border-box; margin: 0;
     white-space: pre-wrap; text-align: left;
@@ -1424,14 +1426,10 @@
 
       <div class="rsvp-done" id="rsvp-done" hidden>
         <h3 id="rsvp-thanks">Thank you</h3>
+        <p class="rsvp-reply" id="rsvp-reply"></p>
+        <p class="rsvp-reply-end" id="rsvp-reply-end"></p>
         <p id="rsvp-status" aria-live="polite"></p>
         <a class="btn btn--solid" id="rsvp-sheet" href="#" target="_blank" rel="noopener" hidden>Confirm my RSVP</a>
-        <pre id="rsvp-message"></pre>
-        <div class="cta-row">
-          <a class="btn" id="rsvp-whatsapp" href="#" target="_blank" rel="noopener">Send on WhatsApp</a>
-          <button class="btn" type="button" id="rsvp-copy">Copy message</button>
-        </div>
-        <p class="hint" id="rsvp-copy-status" aria-live="polite"></p>
         <button class="linkish" type="button" id="rsvp-edit">Change my answer</button>
       </div>
     </section>
@@ -1467,7 +1465,6 @@
   // used for personal links; on your own site (e.g. GitHub Pages) it picks up that address automatically
   const SITE_URL = /claude\.ai$|claudeusercontent|^$/.test(location.hostname) ? 'https://claude.ai/artifact/B9oJznPErYZHz5gShCeSMi' : location.origin + location.pathname;
   const SITE_BASE = SITE_URL.replace(/\/(?:index|hi)(?:\.html)?$/, '/');   // folder holding both language versions
-  const RSVP_WHATSAPP = '';   // host's WhatsApp number with country code, digits only, e.g. '919876543210'. Empty = guest picks a chat.
   const RSVP_SHEET_URL = 'https://script.google.com/macros/s/AKfycbxIOziwsuQogytGQGx9O14P3nK4dHuQE6rRQFs0o5wHW0gY1vzK4MUnBtj_9wrDSHCU/exec'; // Google Apps Script web app /exec URL (see apps-script/Code.gs). Empty = WhatsApp only.
   const PHOTOS_URL = '';      // Google Drive folder link where guests add the moments they captured. Empty = "coming soon".
   const MUSIC_SRC = 'aaj_sajeya.mp3';       // optional audio file path, e.g. 'music.mp3'. Empty = the built-in piano ballad.
@@ -1776,7 +1773,7 @@
     });
   }, { passive: true });
 
-  // ---- RSVP: composes a reply the guest sends on WhatsApp ----
+  // ---- RSVP: saves the reply to the Google Sheet and shows a thank-you message ----
   const form = $('rsvp-form');
   const RSVP_KEY = 'pv-rsvp';
   const local = {
@@ -1805,22 +1802,6 @@
   }
   form.addEventListener('change', syncEvents);
 
-  function compose(r) {
-    const lines = ['RSVP: Preeti & Vivek\'s wedding', '', 'Name: ' + r.name];
-    if (r.attending === 'yes') {
-      lines.push('Joyfully accepts 🙏', 'Guests: ' + r.count, 'Arriving: ' + r.day + ', around ' + r.time);
-      if (r.lday) lines.push('Leaving: ' + r.lday + ', around ' + r.ltime);
-      lines.push('Travelling by: ' + r.travel);
-    } else if (r.attending === 'maybe') {
-      lines.push('Hoping to make it, will confirm soon 🤞', 'Guests: ' + r.count, 'Arriving: ' + r.day + ', around ' + r.time);
-      if (r.lday) lines.push('Leaving: ' + r.lday + ', around ' + r.ltime);
-      if (r.travel) lines.push('Travelling by: ' + r.travel);
-    } else {
-      lines.push('Sorry to miss it. Celebrating from afar and sending our love and blessings 💐');
-    }
-    if (r.note) lines.push('', 'Note: ' + r.note);
-    return lines.join('\n');
-  }
   const sheetParams = r => new URLSearchParams({
     name: r.name, attending: r.attending, count: r.count,
     arrival: r.day + ' ' + r.time, departure: r.lday ? r.lday + ' ' + r.ltime : '', travel: r.travel, note: r.note, guestName
@@ -1829,7 +1810,7 @@
     const sheet = $('rsvp-sheet');
     sheet.hidden = true;
     if (!RSVP_SHEET_URL) {
-      $('rsvp-status').textContent = 'Here is your reply. Send it to the family on WhatsApp, or copy it into any message.';
+      $('rsvp-status').textContent = 'RSVP saving is not set up yet.';
     } else if (r.sent === 'saved') {
       $('rsvp-status').textContent = 'Your RSVP has been sent to the family. You can change it any time.';
     } else if (r.sent === 'opened') {
@@ -1841,15 +1822,21 @@
     }
   }
   function showDone(r) {
-    const msg = compose(r);
-    $('rsvp-message').textContent = msg;
-    const first = r.name.split(' ')[0];
-    $('rsvp-thanks').textContent = r.attending === 'yes' ? 'See you there, ' + first + '!' : r.attending === 'maybe' ? 'Hope to see you, ' + first + '!' : 'We will miss you, ' + first;
-    $('rsvp-whatsapp').href = 'https://wa.me/' + RSVP_WHATSAPP + '?text=' + encodeURIComponent(msg);
-    $('rsvp-whatsapp').textContent = RSVP_SHEET_URL ? 'Also send on WhatsApp' : 'Send on WhatsApp';
-    $('rsvp-whatsapp').classList.toggle('btn--solid', !RSVP_SHEET_URL);
+    const reply = {
+      yes: ['Yay! We’re so happy you’ll be celebrating with us! ❤️',
+        'Your presence will make our special day even more memorable. We can’t wait to celebrate, laugh, and make beautiful memories together!',
+        'See you at the wedding! 🥂'],
+      no: ['We’ll miss having you with us!',
+        'Thank you for letting us know. While we’re sad you won’t be able to join us, we’ll be thinking of you and sending lots of love your way.',
+        'You’ll be missed! ❤️'],
+      maybe: ['We’d love to have you there!',
+        'We understand you might need a little more time to confirm. Do let us know as soon as you can so we can plan accordingly.',
+        'Keeping our fingers crossed! ❤️']
+    }[r.attending] || ['Thank you', '', ''];
+    $('rsvp-thanks').textContent = reply[0];
+    $('rsvp-reply').textContent = reply[1];
+    $('rsvp-reply-end').textContent = reply[2];
     if (RSVP_SHEET_URL) $('rsvp-sheet').href = RSVP_SHEET_URL + '?' + sheetParams(r);
-    $('rsvp-copy-status').textContent = '';
     setStatus(r);
     form.hidden = true;
     $('rsvp-done').hidden = false;
@@ -1893,7 +1880,6 @@
     if (RSVP_SHEET_URL) sendToSheet(r);
   });
   $('rsvp-edit').addEventListener('click', () => { $('rsvp-done').hidden = true; form.hidden = false; });
-  $('rsvp-copy').addEventListener('click', () => copyText($('rsvp-message').textContent, $('rsvp-message'), $('rsvp-copy-status'), 'Copied. Paste it into a message to the family.'));
   const saved = local.get();
   if (saved && saved.name) {
     $('rsvp-name').value = saved.name;

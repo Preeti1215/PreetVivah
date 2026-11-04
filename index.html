@@ -352,6 +352,11 @@
   .team:active { transform: translateY(3px) scale(.97); box-shadow: 0 3px 0 #0002; }
   .team--groom { background: linear-gradient(160deg, #3b86c8, #2d5c92); }
   .team--bride { background: linear-gradient(160deg, #a77bd9, #8c62c4); }
+  .team--sparkle { background: linear-gradient(160deg, #f6d58e, #c99a3c); color: #3a1a2a; }
+  .team--story { background: linear-gradient(160deg, #d9679a, #8c3f87); }
+  .wcard--sangeet .battle-hint { color: #f1e4d3; opacity: .85; }
+  .wc-tag[lang="hi"] { font-family: var(--font-deva); font-size: 1.5rem; line-height: 1.4; margin-top: 4px; }
+  .confetti-glyph { position: fixed; z-index: 60; pointer-events: none; font-size: 22px; line-height: 1; animation: pop 1.3s cubic-bezier(.2, .6, .4, 1) forwards; }
   .vs { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; font-family: var(--font-display); font-weight: 600; font-size: .95rem;
     color: #fff; background: radial-gradient(circle at 35% 30%, #ffd25e, #e0a106 60%, #b45309); box-shadow: 0 0 0 3px #fff, 0 0 0 5px #e0a106;
     animation: thump 1.4s ease-in-out infinite; }
@@ -1309,6 +1314,12 @@
             <p class="wc-copy">Let your moves do the talking and your dance tell the tale!</p>
             <p class="wc-sub">Lights. Camera. Action!</p>
             <p class="wc-copy">Let’s dance our way into unforgettable memories!</p>
+            <div class="teams">
+              <button type="button" class="team team--sparkle" data-team="sparkle"><small>Tap for</small>Sparkle</button>
+              <span class="vs">&amp;</span>
+              <button type="button" class="team team--story" data-team="story"><small>Tap for</small>Story</button>
+            </div>
+            <p class="battle-hint">Tap to light up the stage</p>
           </div>
         </article>
 
@@ -1316,8 +1327,13 @@
           <div class="wc-photo"><img src="images/wardrobe-wedding.webp" alt="Couple in Rajasthani lehenga and kurta before a palace" loading="lazy"></div>
           <div class="wc-body">
             <p class="wc-kicker" lang="hi">पधारो सा</p>
-            <h3 class="wc-title">Wedding</h3>
+            <h3 class="wc-title">A Royal Celebration</h3>
             <p class="wc-theme">Rajasthani theme</p>
+            <p class="wc-copy">With hearts full of joy and homes filled with festivities, we invite you to join us as we celebrate love, laughter and the coming together of two families.</p>
+            <p class="wc-copy">Come experience the colours, culture and charm of Rajasthan as we embark on this beautiful new journey.</p>
+            <p class="wc-tag" lang="hi">थारी मौजूदगी, म्हारी खुशी!</p>
+            <p class="wc-copy">Your presence will make our celebration even more special.</p>
+            <p class="wc-tag" lang="hi">पधारो सा, म्हारे आंगणे! ❤️</p>
           </div>
         </article>
       </div>
@@ -1655,16 +1671,23 @@
     });
   })();
 
-  // Haldi battle: cheer for a side with a burst of team-coloured confetti
-  const TEAM = { groom: ['#3b86c8', '#2d5c92', '#f2b705', '#ffffff'], bride: ['#a77bd9', '#8c62c4', '#f2b705', '#ffffff'] };
+  // Carnival battle and Sangeet stage: tap a button for a burst of team-coloured confetti (Sangeet adds sparkles and music notes)
+  const TEAM = {
+    groom: ['#3b86c8', '#2d5c92', '#f2b705', '#ffffff'], bride: ['#a77bd9', '#8c62c4', '#f2b705', '#ffffff'],
+    sparkle: ['#f6d58e', '#e8c89a', '#ffffff', '#c99a3c'], story: ['#d9679a', '#8c3f87', '#f6d58e', '#ffffff']
+  };
+  const GLYPHS = { sparkle: ['✨', '⭐', '💫'], story: ['🎬', '🎵', '🎶', '🎭'] };
   document.querySelectorAll('.team').forEach(btn => btn.addEventListener('click', () => {
     if (reduce) return;
+    const team = btn.dataset.team, glyphs = GLYPHS[team];
     const r = btn.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
     for (let i = 0; i < 36; i++) {
       const c = document.createElement('i');
-      c.className = 'confetti-bit';
+      const glyph = glyphs && i % 4 === 0;
+      c.className = glyph ? 'confetti-glyph' : 'confetti-bit';
+      if (glyph) c.textContent = glyphs[(i / 4) % glyphs.length];
       const a = Math.random() * Math.PI * 2, d = 60 + Math.random() * 140;
-      c.style.cssText = `left:${cx}px;top:${cy}px;background:${TEAM[btn.dataset.team][i % 4]};--dx:${Math.cos(a) * d}px;--dy:${Math.sin(a) * d - 40}px;--r:${Math.random() * 720 - 360}deg`;
+      c.style.cssText = `left:${cx}px;top:${cy}px;${glyph ? '' : 'background:' + TEAM[team][i % 4] + ';'}--dx:${Math.cos(a) * d}px;--dy:${Math.sin(a) * d - 40}px;--r:${Math.random() * 720 - 360}deg`;
       document.body.appendChild(c);
       setTimeout(() => c.remove(), 1400);
     }

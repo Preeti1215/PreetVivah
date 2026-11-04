@@ -3,7 +3,7 @@
 // -> type "Web app", Execute as "Me", Who has access "Anyone" -> copy the /exec URL into
 // RSVP_SHEET_URL in index.html.
 
-const HEADERS = ['Date & time (IST)', 'Name', 'Attending', 'Guests', 'Arrival', 'Travel', 'Note', 'Invite link name'];
+const HEADERS = ['Date & time (IST)', 'Name', 'Attending', 'Guests', 'Arrival', 'Travel', 'Note', 'guestName'];
 const ATTENDING = { yes: 'Joyfully accepts', maybe: 'Hoping to make it', no: 'Celebrating from afar' };
 
 function save_(p) {
@@ -11,17 +11,16 @@ function save_(p) {
   lock.waitLock(10000);
   try {
     const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
-    if (sheet.getLastRow() === 0) {
-      sheet.appendRow(HEADERS);
-      sheet.setFrozenRows(1);
-    }
+    if (sheet.getLastRow() === 0) sheet.appendRow(HEADERS);
+    else sheet.getRange(1, 1, 1, HEADERS.length).setValues([HEADERS]);   // keep headers current for existing sheets
+    sheet.setFrozenRows(1);
     const name = (p.name || '').trim();
     if (!name) return;
     const attending = p.attending || '';
     const row = [
       Utilities.formatDate(new Date(), 'Asia/Kolkata', 'dd MMM yyyy, hh:mm a'), name, ATTENDING[attending] || attending,
       attending === 'no' ? '' : p.count || '', attending === 'no' ? '' : p.arrival || '',
-      attending === 'no' ? '' : p.travel || '', p.note || '', p.guest || ''
+      attending === 'no' ? '' : p.travel || '', p.note || '', p.guestName || ''
     ];
     // A guest who changes their answer updates their existing row instead of adding a duplicate.
     const names = sheet.getRange(2, 2, Math.max(sheet.getLastRow() - 1, 1), 1).getValues().flat();

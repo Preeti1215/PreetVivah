@@ -1,12 +1,33 @@
 #!/usr/bin/env bash
 # Verify the live GitHub Pages site (English + Hindi) matches the pushed commit and that every asset loads.
-# Usage: verify.sh [timeout_seconds]   (run from the repo root)
+# Usage: verify.sh [timeout_seconds]   (run from the repo root; live check, run after pushing)
+#        verify.sh --local             (run after every change, BEFORE committing: checks the working tree only)
 set -u
 BASE="https://preeti1215.github.io/PreetVivah/"
-TIMEOUT="${1:-300}"
+PAGES="index.html hi.html"   # English (served at the root) and Hindi
 fail=0
 
-PAGES="index.html hi.html"   # English (served at the root) and Hindi
+if [ "${1:-}" = "--local" ]; then
+  for page in $PAGES; do
+    # Every inline <script> must parse
+    if node -e "const h=require('fs').readFileSync('$page','utf8');for(const m of h.matchAll(/<script>([\s\S]*?)<\/script>/g))new Function(m[1])" 2>/tmp/verify_err; then
+      echo "OK  $page scripts parse"; else echo "FAIL $page script error: $(head -1 /tmp/verify_err)"; fail=1; fi
+    grep -q "const RSVP_SHEET_URL = 'https://script.google.com/macros/s/[^']*/exec'" "$page" \
+      && echo "OK  $page RSVP_SHEET_URL set" || { echo "FAIL $page RSVP_SHEET_URL empty or malformed"; fail=1; }
+  done
+  # Every relative src/href exists on disk
+  for a in $( for page in $PAGES; do
+                grep -oE '(src|href)="[^"#:]+"' "$page" | sed -E 's/^(src|href)="//; s/"$//'
+                grep -oE "MUSIC_SRC = '[^']+'" "$page" | sed -E "s/.*'(.+)'/\1/"
+              done | grep -E '^[A-Za-z0-9_./-]+$' | sort -u ); do
+    [ "$a" = "./" ] && continue
+    [ -e "$a" ] && echo "OK  $a" || { echo "FAIL missing file $a"; fail=1; }
+  done
+  [ "$fail" = 0 ] && echo "Local checks passed." || echo "Local checks failed."
+  exit "$fail"
+fi
+
+TIMEOUT="${1:-300}"
 
 for page in $PAGES; do
   url="$BASE"; [ "$page" = "index.html" ] || url="${BASE}${page}"

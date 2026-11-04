@@ -1,11 +1,13 @@
 ---
 name: verify-site
-description: Verify the live wedding site at https://preeti1215.github.io/PreetVivah/ after pushing an update. Use after every push to main, or when asked to check, verify or test the live site.
+description: Verify the wedding site. Run `verify.sh --local` after every change and before committing or pushing; run the full live check after every push to main, or when asked to check, verify or test the live site.
 ---
 
 # Verify the live site
 
 The site is served by GitHub Pages from `main` (repo root) of `Preeti1215/PreetVivah`. Hosting an update means committing and pushing to `main`; Pages redeploys in about a minute.
+
+After every change, before committing or pushing: run `bash .claude/skills/verify-site/verify.sh --local`. It checks that the inline scripts in both pages parse, `RSVP_SHEET_URL` is set, and every referenced asset exists. Fix any FAIL before committing.
 
 After every push:
 

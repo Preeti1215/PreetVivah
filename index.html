@@ -1385,7 +1385,7 @@
   const SITE_URL = /claude\.ai$|claudeusercontent|^$/.test(location.hostname) ? 'https://claude.ai/artifact/B9oJznPErYZHz5gShCeSMi' : location.origin + location.pathname;
   const SITE_BASE = SITE_URL.replace(/\/(?:index|hi)(?:\.html)?$/, '/');   // folder holding both language versions
   const RSVP_WHATSAPP = '';   // host's WhatsApp number with country code, digits only, e.g. '919876543210'. Empty = guest picks a chat.
-  const RSVP_SHEET_URL = ''; // Google Apps Script web app /exec URL (see apps-script/Code.gs). Empty = WhatsApp only.
+  const RSVP_SHEET_URL = 'https://script.google.com/macros/s/AKfycbxIOziwsuQogytGQGx9O14P3nK4dHuQE6rRQFs0o5wHW0gY1vzK4MUnBtj_9wrDSHCU/exec'; // Google Apps Script web app /exec URL (see apps-script/Code.gs). Empty = WhatsApp only.
   const PHOTOS_URL = '';      // Google Drive folder link where guests add the moments they captured. Empty = "coming soon".
   const MUSIC_SRC = 'aaj_sajeya.mp3';       // optional audio file path, e.g. 'music.mp3'. Empty = the built-in piano ballad.
   {
@@ -1401,21 +1401,27 @@
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const $ = id => document.getElementById(id);
 
-  // ---- Personal greeting from a link like …#for-Riya-and-Family ----
+  // ---- Personal greeting from a link like …#guestName=Riya-and-Family ----
   const store = {
     get(k) { try { return sessionStorage.getItem(k); } catch { return null; } },
     set(k, v) { try { sessionStorage.setItem(k, v); } catch {} }
   };
-  const nameToSlug = name => 'for-' + name.trim().replace(/&/g, ' and ').replace(/[^A-Za-z0-9.\s\u0900-\u097F]/g, '').trim().split(/\s+/).join('-');
+  const nameToSlug = name => name.trim().replace(/&/g, ' and ').replace(/[^A-Za-z0-9.\s\u0900-\u097F]/g, '').trim().split(/\s+/).join('-');
   const slugToName = slug => slug.replace(/^for-/, '').split('-').filter(Boolean).map(w => w.toLowerCase() === 'and' ? '&' : w).join(' ');
-  // Optional guest limit: …#for-Riya-and-Family&max=4
-  let guest = '', maxGuests = 6;
-  const hash = decodeURIComponent(location.hash.slice(1));
-  const link = hash.match(/^(for-[A-Za-z0-9.\u0900-\u097F-]+)(?:&max=(\d{1,2}))?$/);
+  // Optional guest limit: …#guestName=Riya-and-Family&max=4 (also read from ?guestName=… or the old #for-… form)
+  let guest = '', guestName = '', maxGuests = 6;
+  const params = new URLSearchParams(location.hash.slice(1).replace(/^for-([^&]*)/, 'guestName=$1'));
+  const qs = new URLSearchParams(location.search);
+  const rawName = (params.get('guestName') || qs.get('guestName') || '').trim();
+  const rawMax = params.get('max') || qs.get('max') || '';
+  const link = /^[A-Za-z0-9.\u0900-\u097F-]+$/.test(rawName) ? [null, rawName, rawMax.match(/^\d{1,2}$/) ? rawMax : ''] : null;
   if (link) {
-    guest = slugToName(link[1]);
-    store.set('guest', guest); store.set('max', link[2] || '');
-  } else guest = store.get('guest') || '';
+    guestName = link[1]; guest = slugToName(guestName);
+    store.set('guestName', guestName); store.set('max', link[2]);
+  } else {
+    guestName = store.get('guestName') || '';
+    guest = guestName ? slugToName(guestName) : '';
+  }
   if (guest) maxGuests = Math.min(Math.max(parseInt(link ? link[2] : store.get('max'), 10) || 6, 1), 20);
   if (guest) {
     $('seal-dear').textContent = 'Dear ' + guest;
@@ -1688,7 +1694,7 @@
   }
   const sheetParams = r => new URLSearchParams({
     name: r.name, attending: r.attending, count: r.count,
-    arrival: r.day + ' ' + r.time, travel: r.travel, note: r.note, guest
+    arrival: r.day + ' ' + r.time, travel: r.travel, note: r.note, guestName
   });
   function setStatus(r) {
     const sheet = $('rsvp-sheet');
@@ -1790,7 +1796,7 @@
       const n = $('host-name').value.trim();
       const m = Math.min(parseInt($('host-max').value, 10), 20);
       const base = $('host-lang').value === 'hi' ? SITE_BASE + 'hi.html' : SITE_BASE;
-      $('host-link').textContent = n ? base + '#' + nameToSlug(n) + (m >= 1 ? '&max=' + m : '') : base;
+      $('host-link').textContent = n ? base + '#guestName=' + nameToSlug(n) + (m >= 1 ? '&max=' + m : '') : base;
     };
     $('host-lang').value = document.documentElement.lang === 'hi' ? 'hi' : 'en';
     $('host-lang').addEventListener('change', update);

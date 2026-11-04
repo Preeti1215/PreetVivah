@@ -3,7 +3,7 @@
 // -> type "Web app", Execute as "Me", Who has access "Anyone" -> copy the /exec URL into
 // RSVP_SHEET_URL in index.html.
 
-const HEADERS = ['Date & time (IST)', 'Name', 'Attending', 'Guests', 'Arrival', 'Travel', 'Note', 'guestName'];
+const HEADERS = ['Date & time (IST)', 'Name', 'Attending', 'Guests', 'Arrival', 'Travel', 'Note', 'guestName', 'Departure'];   // Departure last, so existing rows keep their columns
 const ATTENDING = { yes: 'Joyfully accepts', maybe: 'Hoping to make it', no: 'Celebrating from afar' };
 
 function save_(p) {
@@ -20,7 +20,8 @@ function save_(p) {
     const row = [
       Utilities.formatDate(new Date(), 'Asia/Kolkata', 'dd MMM yyyy, hh:mm a'), name, ATTENDING[attending] || attending,
       attending === 'no' ? '' : p.count || '', attending === 'no' ? '' : p.arrival || '',
-      attending === 'no' ? '' : p.travel || '', p.note || '', p.guestName || ''
+      attending === 'no' ? '' : p.travel || '', p.note || '', p.guestName || '',
+      attending === 'no' ? '' : p.departure || ''
     ];
     // A guest who changes their answer updates their existing row instead of adding a duplicate.
     const names = sheet.getRange(2, 2, Math.max(sheet.getLastRow() - 1, 1), 1).getValues().flat();

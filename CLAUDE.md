@@ -29,7 +29,7 @@ Also: `#petals` canvas animation and the `#music-btn` toggle (plays `MUSIC_SRC`,
 **Rule: whenever a change is requested, first confirm whether it applies to the English version (`index.html`), the Hindi version (`hi.html`) or both, before editing.** Do not assume. Applying a change to one page only is fine when asked. A Hindi change must follow the reference card `Wedding_Invitation_Updated_Page2.pdf` (the user's own Downloads copy).
 
 - English is served at the root, Hindi at `hi.html`. Each page has a toggle button (top right) that keeps the current section or guest link.
-- `?lang=hi` on the English page redirects to Hindi; `?lang=en` on the Hindi page redirects to English. Shared links look like `https://preeti1215.github.io/PreetVivah/hi.html#guestName=Riya-and-Family&max=4`.
+- `?lang=hi` on the English page redirects to Hindi; `?lang=en` on the Hindi page redirects to English. Shared links look like `https://preeti1215.github.io/PreetVivah/hi.html#guestName=Piya-and-Family&max=4`.
 - The `#host` link maker has a language dropdown that builds the matching link. Guest names can be typed in Devanagari.
 - `hi.html` differs from `index.html` beyond text: Devanagari fonts and CSS overrides (no letter-spacing, no gradient-clipped text, which cut off vowel signs), names are not split letter by letter, a Hindi-only "परिवारजन" section (families list from the printed card), Hindi quiz/RSVP strings and a Hindi WhatsApp message. Option `value`s (Train, 20 Dec, 10 AM, yes/maybe/no) stay English so the Google Sheet gets consistent data.
 - Both pages share the same script settings and RSVP logic, so a logic change usually needs doing twice.
@@ -45,7 +45,7 @@ Also: `#petals` canvas animation and the `#music-btn` toggle (plays `MUSIC_SRC`,
 
 ## Behaviour worth knowing
 
-- Personal greeting: `#guestName=Riya-and-Family` (or `?guestName=…`; old `#for-…` links still work) in the URL becomes "Dear Riya & Family" (`nameToSlug` / `slugToName`), remembered in `sessionStorage`. The raw `guestName` is also saved to the sheet's `guestName` column with the RSVP date & time. `#host` shows the link maker.
+- Personal greeting: `#guestName=Piya-and-Family` (or `?guestName=…`; old `#for-…` links still work) in the URL becomes "Dear Piya & Family" (`nameToSlug` / `slugToName`), remembered in `sessionStorage`. The raw `guestName` is also saved to the sheet's `guestName` column with the RSVP date & time. `#host` shows the link maker.
 - The last RSVP is saved in browser storage and restored on reload; all storage access is wrapped in try/catch.
 - `prefers-reduced-motion` is respected in both CSS and JS (`reduce`). Keep it that way for new animations.
 - The page was originally a claude.ai Artifact, so line 1 carries an injected doctype/head/`<style>` skeleton before the real `<title>`. Leave it alone unless cleaning up the head on purpose.

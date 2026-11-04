@@ -617,6 +617,20 @@
   .stage .figure--groom { animation: groom-bow 3.8s var(--ease-out) .9s both; }
   .stage .figure--bride { animation: bride-bow 3.8s var(--ease-out) .9s both; }
   .settled .rise, .settled .name .ch { animation: none !important; opacity: 1; }
+  /* First screen, phrase by phrase with tiny gaps (each fades in whole over 0.6 s):
+     emblem and motto 0.6 s, "Dear …" 0.7 s, first invite phrase 0.85 s, second phrase 1.0 s, names block 1.15 s, everything else 1.3 s */
+  .stage .hero .rise { animation-name: slowmo; animation-duration: .6s; animation-timing-function: ease-out; animation-delay: 1300ms; }
+  .stage .hero .jain, .stage .hero .motto, .stage .hero .motto-en, .stage .hero .motto-en + .it-hearts { animation-delay: 600ms; }
+  .stage .hero .rise.dear { animation-delay: 700ms; }
+  .stage .hero .shloka, .stage .hero .sadar { animation-delay: 850ms; }
+  .stage .hero .invite-line { animation-delay: 1000ms; }
+  .stage .hero .ph { display: block; animation: slowmo .6s ease-out both; animation-delay: calc(var(--t) * 1ms); }
+  .stage .hero .names .rise { animation-delay: 1150ms; }
+  .stage .hero .names ~ .invite-line { animation-delay: 1300ms; }
+  /* Plain gentle fade (no zoom or blur) */
+  @keyframes slowmo { from { opacity: 0; } to { opacity: 1; } }
+  .stage .hero .name .ch { animation: none; }
+  .stage .hero .name { animation: slowmo .6s ease-out 1.15s both, foil 6s ease-in-out 3s infinite; }
 
   /* Scroll reveals: armed only for sections below the first screen */
   .armed .reveal { opacity: .001; transform: translateY(28px); transition: opacity 1s var(--ease-out), transform 1s var(--ease-out); }
@@ -649,7 +663,18 @@
   }
 
   /* ---------- Personal greeting ---------- */
-  .dear { font-size: var(--step-3); line-height: 1.1; color: var(--bronze); }
+  .dear { font-size: calc(var(--step-3) * 1.2); line-height: 1.15; color: var(--bronze); position: relative; width: fit-content; max-width: 100%; margin-inline: auto; padding-inline: 1.2em;
+    text-shadow: 0 0 1px var(--gold-light), 0 0 14px var(--gold-glow), 0 0 30px var(--gold-glow); }
+  .dear::before, .dear::after { content: "\2726"; position: absolute; top: 50%; font-size: .4em; color: var(--gold); text-shadow: 0 0 8px var(--gold-glow); animation: twinkle-dear 2.4s ease-in-out infinite; }
+  .dear::before { left: 0; } .dear::after { right: 0; animation-delay: 1.2s; }
+  @keyframes twinkle-dear { 0%, 100% { opacity: .45; transform: translateY(-50%) scale(.8); } 50% { opacity: 1; transform: translateY(-50%) scale(1.25) rotate(45deg); } }
+  @media (prefers-reduced-motion: reduce) { .dear::before, .dear::after { animation: none; transform: translateY(-50%); } }
+  /* Gold dust that bursts from the seal when the invite opens */
+  .gold-dust { position: fixed; z-index: 60; border-radius: 50%; pointer-events: none; translate: -50% -50%;
+    background: radial-gradient(circle, var(--gold-light) 0 30%, var(--gold) 60%, transparent 72%); box-shadow: 0 0 10px 2px var(--gold-glow);
+    animation: dust 1.9s cubic-bezier(.15, .7, .3, 1) var(--dl, 0ms) both; }
+  .gold-dust--star { border-radius: 0; box-shadow: none; background: var(--gold); clip-path: polygon(50% 0, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0 50%, 39% 39%); }
+  @keyframes dust { 0% { opacity: 0; transform: translate(0, 0) scale(.3); } 12%, 65% { opacity: 1; } 100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(1) rotate(180deg); } }
   .seal-dear { font-family: var(--font-script) !important; font-size: clamp(2rem, 1.6rem + calc(2 * var(--vw)), 3rem) !important; letter-spacing: 0 !important; text-transform: none !important; line-height: 1.1; }
 
   /* ---------- RSVP ---------- */
@@ -883,31 +908,71 @@
     -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 62%, transparent 100%);
     mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 62%, transparent 100%); }
   /* They pedal in from the distance: small and high at first, growing as they ride to the front, bobbing with each pedal stroke */
-  .bike-ride { display: block; width: 100%; transform-origin: 50% 100%; opacity: 0; }
+  /* They ride out from the back of the mandap (--fx/--fy, set in the script) towards you: tiny and far at first, weaving gently,
+     growing as they come closer at a steady speed, with a bob and lean on every pedal stroke and a shadow under the wheels */
+  .bike-ride { display: block; position: relative; z-index: 0; width: 100%; transform-origin: 50% 100%; opacity: 0; }
   .bike-ride .bike-couple { display: block; transform-origin: 50% 100%; }
-  .bike-ride.is-riding { animation: ride-toward 3.6s cubic-bezier(.3,.1,.35,1) both; }
-  .bike-ride.is-riding .bike-couple { animation: pedal .48s ease-in-out 8; }
+  .bike-ride::after { content: ""; display: block; width: 52%; height: 12px; margin: -10px auto 0; border-radius: 50%;
+    background: radial-gradient(closest-side, #6b422047, transparent); }
+  .bike-ride.is-riding { animation: ride-toward 3s linear both; }
+  .bike-ride.is-riding .bike-couple { animation: pedal .5s ease-in-out 6; }
   @keyframes ride-toward {
-    0% { opacity: 0; transform: translateY(-120px) scale(.22); filter: blur(1.5px); }
-    12% { opacity: 1; filter: blur(.6px); }
-    40% { transform: translateY(-60px) scale(.5); filter: none; }
+    0% { opacity: 0; transform: translate(var(--fx, 0px), var(--fy, -160px)) scale(.12); }
+    8% { opacity: 1; }
+    30% { transform: translate(calc(var(--fx, 0px) * .7 + 14px), calc(var(--fy, -160px) * .7)) scale(.38); }
+    60% { transform: translate(calc(var(--fx, 0px) * .4 - 12px), calc(var(--fy, -160px) * .4)) scale(.64); }
+    85% { transform: translate(5px, calc(var(--fy, -160px) * .15)) scale(.87); }
     100% { opacity: 1; transform: none; }
   }
-  @keyframes pedal { 0%, 100% { transform: translateY(0) rotate(0); } 25% { transform: translateY(-3px) rotate(-1.2deg); } 75% { transform: translateY(-3px) rotate(1.2deg); } }
+  @keyframes pedal {
+    0%, 100% { transform: translateY(0) rotate(0); }
+    25% { transform: translateY(-3px) rotate(-1.6deg); }
+    50% { transform: translateY(0) rotate(0); }
+    75% { transform: translateY(-3px) rotate(1.6deg); }
+  }
   @media (prefers-reduced-motion: reduce) { .bike-ride { opacity: 1; } .bike-ride.is-riding, .bike-ride.is-riding .bike-couple { animation: none; } }
+
+  /* ---------- Mandap decor behind the welcome: golden light rays, glow behind the mandap ---------- */
+  .mandap-bg { opacity: .26; width: 100%; max-width: none; aspect-ratio: 1 / 1.3; object-fit: fill; top: 40%; filter: saturate(1.05); }   /* narrower and taller than the photo, so it frames more of the first screen */
+  .hero .parents, .hero .chi, .hero .and { text-shadow: 0 0 4px #fffaf0, 0 0 10px #fffaf0, 0 0 18px #fffaf0; }
+  .hero-fx::before { /* soft rays of light shining down from the top */
+    content: ""; position: absolute; left: 50%; top: 0; width: 170%; height: 75%; translate: -50% 0; pointer-events: none;
+    background: conic-gradient(from 180deg at 50% 0%, #fff6dc66 0deg 4deg, transparent 4deg 13deg, #fff3d055 13deg 16deg, transparent 16deg 27deg, #fff6dc4d 27deg 30deg, transparent 30deg 330deg, #fff6dc4d 330deg 333deg, transparent 333deg 344deg, #fff3d055 344deg 347deg, transparent 347deg 356deg, #fff6dc66 356deg 360deg);
+    -webkit-mask-image: linear-gradient(#000 10%, transparent 90%); mask-image: linear-gradient(#000 10%, transparent 90%);
+    animation: rays-pulse 7s ease-in-out infinite; }
+  .hero-fx::after { /* warm glow behind the mandap */
+    content: ""; position: absolute; left: 50%; top: 41%; width: 110%; aspect-ratio: 1; translate: -50% -50%; z-index: -1; pointer-events: none;
+    background: radial-gradient(closest-side, #fff4dccc 0%, #fbe7c480 45%, transparent 100%); }
+  @keyframes rays-pulse { 0%, 100% { opacity: .65; } 50% { opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) { .hero-fx::before { animation: none; } }
+
+  /* Blue and peach flowers (as on the opening envelope) everywhere, from corner-clear.webp: same art with a transparent
+     background, so no blend or fade is needed and the flowers sit crisply on top of the clouds */
+  .card > .corner { width: 132px; mix-blend-mode: normal; -webkit-mask-image: none; mask-image: none; }
+  .it-corner--br { transform: scale(-1, -1); }
+  /* Gentle hint on the first page: scroll down to play the quiz (stays until Our Story is in view) */
+  .scroll-nudge { position: fixed; z-index: 41; left: 50%; bottom: calc(86px + env(safe-area-inset-bottom, 0px)); translate: -50% 0;
+    display: inline-flex; align-items: center; gap: 8px; max-width: calc(100vw - 120px); padding: 9px 16px; border-radius: 999px;
+    background: #fffaf0f2; border: 1px solid #d9a94e99; box-shadow: 0 8px 22px -10px #6b422066;
+    font-family: var(--font-display); font-size: .68rem; letter-spacing: .12em; text-transform: uppercase; line-height: 1.3; text-align: center;
+    color: var(--bronze-deep); text-decoration: none; opacity: 0; transition: opacity .6s ease, translate .6s ease; pointer-events: none; }
+  .scroll-nudge.on { opacity: 1; pointer-events: auto; }
+  .scroll-nudge svg { flex: none; width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; animation: nudge-bob 1.6s ease-in-out infinite; }
+  @keyframes nudge-bob { 0%, 100% { transform: translateY(-2px); } 50% { transform: translateY(3px); } }
+  @media (prefers-reduced-motion: reduce) { .scroll-nudge svg { animation: none; } }
 
   /* Itinerary, laid out like the PDF: time | line | icon and event */
   #itinerary { background: url("images/sky.webp") center top / 100% auto repeat-y; overflow: hidden; }
   .it-corner { position: absolute; z-index: 0; pointer-events: none; }
-  .it-corner--tl { top: 0; left: 0; width: 34%; }
-  .it-corner--br { bottom: 0; right: 0; width: 42%; }
+  .it-corner--tl { top: -4px; left: -4px; width: 28%; }
+  .it-corner--br { bottom: -4px; right: -4px; width: 28%; }
   #itinerary .section-head, .it { position: relative; z-index: 1; }
   #itinerary .section-head { margin-bottom: 26px; }
   #itinerary .script-title { font-family: var(--font-display); font-weight: 500; letter-spacing: .08em; color: #8a5a2b; background: none; -webkit-text-fill-color: currentColor; }
   .it-hearts { width: 58px; }
   .it { max-width: 400px; margin: 0 auto; display: grid; gap: 18px; }
   .it-day { display: flex; align-items: center; justify-content: center; gap: 4px; }
-  .sprig { width: 50px; }
+  .sprig { width: 50px; filter: saturate(.32) brightness(.82) contrast(1.05); }   /* grey leaves with a slight green tint, like the leaves around the corner flowers */
   .sprig--r { transform: scaleX(-1); }
   .plaque { padding: 6px 30px; font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; letter-spacing: .08em; text-transform: uppercase; color: #8a5a2b;
     background: #f9e1e1; border: 1px solid #c9a27a;
@@ -1050,6 +1115,7 @@
   </button>
 </div>
 <canvas id="petals" aria-hidden="true"></canvas>
+<a class="scroll-nudge" id="scroll-nudge" href="#story" hidden><span>क्विज़ खेलने के लिए नीचे स्क्रॉल करें</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></a>
 <button class="music" id="music-btn" type="button" aria-pressed="false"><span class="eq" aria-hidden="true"><i></i><i></i><i></i></span><span id="music-label">संगीत चलाएँ</span></button>
 <a class="lang-toggle" id="lang-toggle" href="./" lang="en" hreflang="en">English</a>
 
@@ -1074,8 +1140,8 @@
   </nav>
 
   <main class="card">
-    <img class="corner corner--tl" src="images/corner.webp" alt="">
-    <img class="corner corner--tr" src="images/corner.webp" alt="">
+    <img class="corner corner--tl" src="images/corner-clear.webp" alt="">
+    <img class="corner corner--tr" src="images/corner-clear.webp" alt="">
 
     <!-- Invitation -->
     <section class="hero" id="invite">
@@ -1091,23 +1157,23 @@
 
       <div class="hero-inner">
         <img class="jain rise" style="--d:0" src="images/jain.webp" alt="जैन प्रतीक">
-        <p class="motto deva rise" style="--d:150" lang="sa">परस्परोपग्रहो जीवनाम्</p>
-        <p class="motto-en rise" style="--d:250">जीव परस्पर एक-दूसरे के उपकारी हैं</p>
-        <img class="it-hearts rise" style="--d:300" src="images/ic-hearts.webp" alt="">
+        <p class="motto deva rise" style="--d:1150" lang="sa">परस्परोपग्रहो जीवनाम्</p>
+        <p class="motto-en rise" style="--d:1250">जीव परस्पर एक-दूसरे के उपकारी हैं</p>
+        <img class="it-hearts rise" style="--d:1300" src="images/ic-hearts.webp" alt="">
 
-        <p class="dear script rise" id="dear" style="--d:350" hidden></p>
-        <p class="shloka deva rise" style="--d:300">॥ श्री महावीराय नमः ॥<br>मंगलम भगवान् वीरो, मंगलम गौतमः प्रभूः।<br>मंगलम स्थूलभद्राद्या, जैन धर्मोऽस्तु मंगलम् ॥</p>
-        <p class="sadar rise" style="--d:380">॥ सादर जय जिनेन्द्र ॥</p>
-        <p class="invite-line rise" style="--d:420">आँखों में सपने नए, हाथों में मेहंदी का प्यार,<br>बाबुल के आँगन से चली, सजाकर खुशियों का संसार।<br>प्रभु की असीम कृपा से हमारी लाडली बिटिया</p>
+        <p class="dear script rise" id="dear" style="--d:1350" hidden></p>
+        <p class="shloka deva rise" style="--d:1400">॥ श्री महावीराय नमः ॥<br>मंगलम भगवान् वीरो, मंगलम गौतमः प्रभूः।<br>मंगलम स्थूलभद्राद्या, जैन धर्मोऽस्तु मंगलम् ॥</p>
+        <p class="sadar rise" style="--d:1450">॥ सादर जय जिनेन्द्र ॥</p>
+        <p class="invite-line rise" style="--d:1500">आँखों में सपने नए, हाथों में मेहंदी का प्यार,<br>बाबुल के आँगन से चली, सजाकर खुशियों का संसार।<br>प्रभु की असीम कृपा से हमारी लाडली बिटिया</p>
 
         <h1 class="names">
-          <span class="chi rise" style="--d:1000">चि. सौ. कां.</span>
-          <span class="name" data-split style="--base:1100">प्रीति</span>
-          <span class="parents rise" style="--d:1500">(सुपुत्री – सौ. एकता वं दिलीपकुमार रांका सेठिया, इचलकरंजी)</span>
-          <span class="and script rise" style="--d:1700">का शुभ परिणय</span>
-          <span class="chi rise" style="--d:1800">चि.</span>
-          <span class="name" data-split style="--base:1900">विवेकजी</span>
-          <span class="parents rise" style="--d:2300">(सुपुत्र – सौ. राजकुमारजी सा. व श्री अशोककुमारजी सा., बोथरा, चैन्नई)</span>
+          <span class="chi rise" style="--d:50">चि. सौ. कां.</span>
+          <span class="name" data-split style="--base:100">प्रीति</span>
+          <span class="parents rise" style="--d:450">(सुपुत्री – सौ. एकता वं दिलीपकुमार रांका सेठिया, इचलकरंजी)</span>
+          <span class="and script rise" style="--d:600">का शुभ परिणय</span>
+          <span class="chi rise" style="--d:650">चि.</span>
+          <span class="name" data-split style="--base:700">विवेकजी</span>
+          <span class="parents rise" style="--d:1050">(सुपुत्र – सौ. राजकुमारजी सा. व श्री अशोककुमारजी सा., बोथरा, चैन्नई)</span>
         </h1>
 
         <span class="bike-ride" id="bike-ride"><img class="bike-couple" src="images/couple-bike.webp" alt="प्रीति और विवेक साइकिल पर"></span>
@@ -1115,13 +1181,13 @@
         <div class="couple-m" aria-hidden="true">
           <img class="mandap-m" src="images/mandap-bg.webp" alt="">
           <img class="fig fig--groom" src="images/groom-cut.webp" alt="">
-          <img class="mono rise" style="--d:2400" src="images/monogram.webp" alt="">
+          <img class="mono rise" style="--d:1550" src="images/monogram.webp" alt="">
           <img class="fig fig--bride" src="images/bride-cut.webp" alt="">
         </div>
 
-        <p class="invite-line rise" style="--d:2450">के साथ शुभ विवाह निश्चित हुआ है।<br>इस पावन अवसर पर आपका सान्निध्य एवं आशीर्वाद<br>हमारे परिवार के लिए अमूल्य है।</p>
+        <p class="invite-line rise" style="--d:1600">के साथ शुभ विवाह निश्चित हुआ है।<br>इस पावन अवसर पर आपका सान्निध्य एवं आशीर्वाद<br>हमारे परिवार के लिए अमूल्य है।</p>
 
-        <div class="facts rise" style="--d:2500">
+        <div class="facts rise" style="--d:1650">
           <div class="fact">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4M7 14h2M11 14h2M15 14h2M7 17h2M11 17h2"/></svg>
             <span class="label">दिनांक</span>
@@ -1142,14 +1208,14 @@
           </div>
         </div>
 
-        <div class="countdown rise" style="--d:2700" id="countdown" aria-label="विवाह में शेष समय">
+        <div class="countdown rise" style="--d:1750" id="countdown" aria-label="विवाह में शेष समय">
           <div class="unit"><b data-u="d">–</b><small>दिन</small></div>
           <div class="unit"><b data-u="h">–</b><small>घंटे</small></div>
           <div class="unit"><b data-u="m">–</b><small>मिनट</small></div>
           <div class="unit"><b data-u="s">–</b><small>सेकंड</small></div>
         </div>
 
-        <div class="cta-row rise" style="--d:2800">
+        <div class="cta-row rise" style="--d:1850">
           <a class="btn btn--solid" href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=%E0%A4%AA%E0%A5%8D%E0%A4%B0%E0%A5%80%E0%A4%A4%E0%A4%BF%20%E0%A4%94%E0%A4%B0%20%E0%A4%B5%E0%A4%BF%E0%A4%B5%E0%A5%87%E0%A4%95%20%E2%80%94%20%E0%A4%B5%E0%A4%BF%E0%A4%B5%E0%A4%BE%E0%A4%B9&amp;dates=20261220T043000Z/20261221T113000Z&amp;location=%E0%A4%9F%E0%A5%8D%E0%A4%B0%E0%A5%87%E0%A4%9C%E0%A4%B0%20%E0%A4%86%E0%A4%87%E0%A4%B2%E0%A5%88%E0%A4%82%E0%A4%A1%2C%20%E0%A4%B2%E0%A5%8B%E0%A4%A8%E0%A4%BE%E0%A4%B5%E0%A4%B2%E0%A4%BE&amp;details=20%20%E0%A4%A6%E0%A4%BF%E0%A4%B8%E0%A4%82%E0%A4%AC%E0%A4%B0%3A%20%E0%A4%95%E0%A4%BE%E0%A4%B0%E0%A5%8D%E0%A4%A8%E0%A4%BF%E0%A4%B5%E0%A4%B2%20%E0%A4%8F%E0%A4%B5%E0%A4%82%20%E0%A4%B8%E0%A4%82%E0%A4%97%E0%A5%80%E0%A4%A4%E0%A5%A4%2021%20%E0%A4%A6%E0%A4%BF%E0%A4%B8%E0%A4%82%E0%A4%AC%E0%A4%B0%3A%20%E0%A4%AC%E0%A4%BE%E0%A4%B0%E0%A4%BE%E0%A4%A4%20%E0%A4%8F%E0%A4%B5%E0%A4%82%20%E0%A4%AB%E0%A5%87%E0%A4%B0%E0%A5%87%E0%A5%A4" target="_blank" rel="noopener">कैलेंडर में जोड़ें</a>
           <a class="btn" href="#rsvp">RSVP</a>
           <a class="btn" href="https://www.google.com/maps/search/?api=1&amp;query=Treasure+Island+Resort+Lonavala" target="_blank" rel="noopener">रास्ता देखें</a>
@@ -1184,8 +1250,8 @@
 
     <!-- Itinerary -->
     <section id="itinerary">
-      <img class="it-corner it-corner--tl" src="images/ic-corner-tl.webp" alt="">
-      <img class="it-corner it-corner--br" src="images/ic-corner-br.webp" alt="">
+      <img class="it-corner it-corner--tl" src="images/corner-clear.webp" alt="">
+      <img class="it-corner it-corner--br" src="images/corner-clear.webp" alt="">
       <div class="section-head reveal">
         <p class="kicker">दो दिन का उत्सव</p>
         <h2 class="script-title">कार्यक्रम विवरण</h2>
@@ -1265,14 +1331,13 @@
         <article class="wcard wcard--wedding">
           <div class="wc-photo"><img src="images/wardrobe-wedding.webp" alt="महल के सामने राजस्थानी लहँगे और कुर्ते में जोड़ा" loading="lazy"></div>
           <div class="wc-body">
-            <p class="wc-kicker" lang="hi">पधारो म्हारे देस</p>
+            <p class="wc-kicker" lang="hi">पधारो सा</p>
             <h3 class="wc-title">विवाह</h3>
             <p class="wc-theme">राजस्थानी पारंपरिक थीम</p>
             <dl class="dress">
               <dt>महिलाएँ</dt><dd>लहँगा</dd>
               <dt>पुरुष</dt><dd>कुर्ता</dd>
             </dl>
-            <ul class="chips"><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 10H5z"/><path d="M5 21h14"/></svg><span>महारानी और महाराजा वाला अंदाज़</span></li><li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="4.5" r="2"/><path d="M12 7v5M8 10l4 2 4-2M12 12l-7 9h14z"/></svg><span>घूमर के लिए तैयार अदा</span></li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2v3"/><circle cx="12" cy="7" r="2"/><path d="M7 15c0-3.5 2.2-6 5-6s5 2.5 5 6z"/><path d="M8 18v1M12 18v2M16 18v1"/></svg><span>खनकते गहने</span></li><li><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><circle cx="12" cy="13.5" r="3.6"/><path d="M8.5 7l1.5-3h4l1.5 3"/></svg><span>स्लो-मोशन एंट्री</span></li></ul>
           </div>
         </article>
       </div>
@@ -1315,7 +1380,7 @@
         <div class="row-2">
           <div class="field">
             <label for="rsvp-name">आपका नाम</label>
-            <input type="text" id="rsvp-name" name="name" autocomplete="name" placeholder="जैसे रिया शर्मा">
+            <input type="text" id="rsvp-name" name="name" autocomplete="name" placeholder="जैसे पिया शर्मा">
           </div>
           <div class="field">
             <label for="rsvp-count">अतिथि</label>
@@ -1347,6 +1412,18 @@
               <select id="rsvp-time" name="time"><option value="5 AM">प्रातः 5 बजे</option><option value="6 AM">प्रातः 6 बजे</option><option value="7 AM">प्रातः 7 बजे</option><option value="8 AM">प्रातः 8 बजे</option><option value="9 AM">प्रातः 9 बजे</option><option value="10 AM" selected>प्रातः 10 बजे</option><option value="11 AM">प्रातः 11 बजे</option><option value="12 PM">दोपहर 12 बजे</option><option value="1 PM">दोपहर 1 बजे</option><option value="2 PM">दोपहर 2 बजे</option><option value="3 PM">दोपहर 3 बजे</option><option value="4 PM">सायं 4 बजे</option><option value="5 PM">सायं 5 बजे</option><option value="6 PM">सायं 6 बजे</option><option value="7 PM">रात्रि 7 बजे</option><option value="8 PM">रात्रि 8 बजे</option><option value="9 PM">रात्रि 9 बजे</option><option value="10 PM">रात्रि 10 बजे</option><option value="11 PM">रात्रि 11 बजे</option></select>
             </div>
           </div>
+          <div class="row-2 row-2--even">
+            <div class="field">
+              <label for="rsvp-lday">प्रस्थान की तिथि</label>
+              <select id="rsvp-lday" name="lday">
+                <option value="20 Dec">20 दिसंबर</option><option value="21 Dec" selected>21 दिसंबर</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="rsvp-ltime">लगभग समय</label>
+              <select id="rsvp-ltime" name="ltime"></select>
+            </div>
+          </div>
           <fieldset class="field">
             <legend>आप कैसे यात्रा करेंगे?</legend>
             <div class="choices choices--2">
@@ -1360,7 +1437,7 @@
 
         <div class="field">
           <label for="rsvp-note">जोड़े के लिए संदेश <small>(वैकल्पिक)</small></label>
-          <textarea id="rsvp-note" name="note" placeholder="भोजन की पसंद, या कोई आशीर्वाद"></textarea>
+          <textarea id="rsvp-note" name="note" placeholder="कोई प्रश्न, विशेष अनुरोध या आशीर्वाद"></textarea>
         </div>
 
         <p class="form-error" id="rsvp-error" hidden></p>
@@ -1407,15 +1484,15 @@
       <img class="it-hearts" src="images/ic-hearts.webp" alt="">
     </section>
 
-    <img class="corner corner--bl" src="images/corner.webp" alt="">
-    <img class="corner corner--br" src="images/corner.webp" alt="">
+    <img class="corner corner--bl" src="images/corner-clear.webp" alt="">
+    <img class="corner corner--br" src="images/corner-clear.webp" alt="">
   </main>
 
   <aside class="host" id="host" hidden>
     <h2>Personal invitation links</h2>
     <p>Only you see this panel. Type a guest's name to get a link that greets them by name on the opening curtain and fills in their RSVP. Set the most guests they can bring (blank = 6) and the language of the invite.</p>
     <div class="row">
-      <input type="text" id="host-name" placeholder="e.g. Riya & Family" aria-label="Guest name">
+      <input type="text" id="host-name" placeholder="e.g. Piya & Family" aria-label="Guest name">
       <input type="number" id="host-max" class="host-max" min="1" max="20" placeholder="Max guests" aria-label="Maximum guests">
       <select id="host-lang" aria-label="Invitation language"><option value="en">English</option><option value="hi">हिन्दी</option></select>
       <button class="btn btn--solid" type="button" id="host-copy">Copy link</button>
@@ -1448,14 +1525,14 @@
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const $ = id => document.getElementById(id);
 
-  // ---- Personal greeting from a link like …#guestName=Riya-and-Family ----
+  // ---- Personal greeting from a link like …#guestName=Piya-and-Family ----
   const store = {
     get(k) { try { return sessionStorage.getItem(k); } catch { return null; } },
     set(k, v) { try { sessionStorage.setItem(k, v); } catch {} }
   };
   const nameToSlug = name => name.trim().replace(/&/g, ' and ').replace(/[^A-Za-z0-9.\s\u0900-\u097F]/g, '').trim().split(/\s+/).join('-');
   const slugToName = slug => slug.replace(/^for-/, '').split('-').filter(Boolean).map(w => w.toLowerCase() === 'and' ? 'और' : w).join(' ');
-  // Optional guest limit: …#guestName=Riya-and-Family&max=4 (also read from ?guestName=… or the old #for-… form)
+  // Optional guest limit: …#guestName=Piya-and-Family&max=4 (also read from ?guestName=… or the old #for-… form)
   let guest = '', guestName = '', maxGuests = 6;
   const params = new URLSearchParams(location.hash.slice(1).replace(/^for-([^&]*)/, 'guestName=$1'));
   const qs = new URLSearchParams(location.search);
@@ -1522,15 +1599,25 @@
 
 
 
-  // Start the bicycle ride when the couple scrolls into view (after the page has opened)
+  // Start the bicycle ride just after the first screen has appeared (about 2 s after opening), once the couple is partly on screen
   (() => {
     const ride = $('bike-ride');
-    const go = () => ride.classList.add('is-riding');
+    // Start point: the opening at the back of the mandap, measured from where the couple will stop
+    const go = () => {
+      const m = document.querySelector('.mandap-bg');
+      if (m) {
+        const a = ride.getBoundingClientRect(), b = m.getBoundingClientRect();
+        ride.style.setProperty('--fx', (b.left + b.width / 2 - (a.left + a.width / 2)) + 'px');
+        ride.style.setProperty('--fy', Math.min(-80, b.top + b.height * .62 - a.bottom) + 'px');
+      }
+      ride.classList.add('is-riding');
+    };
     if (!('IntersectionObserver' in window)) return go();
+    let t0 = 0;
     const io = new IntersectionObserver(es => es.forEach(e => {
-      if (e.isIntersecting && document.querySelector('.stage')) { setTimeout(go, 300); io.disconnect(); }
-    }), { threshold: 0.75 });
-    const start = () => io.observe(ride);
+      if (e.isIntersecting) { setTimeout(go, Math.max(0, t0 + 2000 - Date.now())); io.disconnect(); }
+    }), { threshold: 0.3 });
+    const start = () => { t0 = Date.now(); io.observe(ride); };
     if (document.querySelector('.stage')) start(); else new MutationObserver((m, o) => { if (document.querySelector('.stage')) { o.disconnect(); start(); } }).observe(document.body, { subtree: true, attributes: true, attributeFilter: ['class'] });
   })();
 
@@ -1628,7 +1715,20 @@
     }
   }));
 
-  // Curtain: opens on tap, or by itself after a moment
+  // Gold dust bursting out from the seal as the curtain opens
+  function goldDust() {
+    const cx = innerWidth / 2, cy = innerHeight / 2, reach = Math.min(innerWidth, innerHeight) * .55;
+    for (let i = 0; i < 48; i++) {
+      const s = document.createElement('i'), star = i % 3 === 0;
+      s.className = 'gold-dust' + (star ? ' gold-dust--star' : '');
+      const a = Math.random() * Math.PI * 2, d = 80 + Math.random() * reach, z = (star ? 9 : 4) + Math.random() * (star ? 9 : 6);
+      s.style.cssText = `left:${cx}px;top:${cy}px;width:${z}px;height:${z}px;--dx:${Math.cos(a) * d}px;--dy:${Math.sin(a) * d}px;--dl:${Math.random() * 300}ms`;
+      document.body.appendChild(s);
+      setTimeout(() => s.remove(), 2400);
+    }
+  }
+
+  // Curtain: opens on tap, or by itself after 40 seconds for guests who don't tap (music then waits for the music button)
   let opened = false;
   function openGate(viaTap) {
     if (opened) return;
@@ -1637,6 +1737,7 @@
     page.classList.remove('pre');
     page.classList.add('stage');
     burst();
+    goldDust();
     if (viaTap) Music.play(); else $('music-btn').classList.add('nudge');
     setTimeout(() => { gate.hidden = true; }, 1800);
     setTimeout(() => page.classList.add('settled'), 5200);
@@ -1644,8 +1745,22 @@
   if (reduce) { gate.hidden = true; page.classList.remove('pre'); }
   else {
     gate.addEventListener('click', () => openGate(true));
-    setTimeout(() => openGate(false), guest ? 12000 : 11000);
+    setTimeout(() => openGate(false), 40000);
   }
+
+  // Scroll hint: shows about 3 s after opening and stays while the guest is on the first page;
+  // hidden once Our Story comes into view, back again if they scroll up to the top
+  (() => {
+    const nudge = $('scroll-nudge'), story = $('story');
+    let ready = false, past = false;
+    const sync = () => { nudge.classList.toggle('on', ready && !past); };
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(es => es.forEach(e => { past = e.isIntersecting || e.boundingClientRect.top < 0; sync(); })).observe(story);
+    }
+    const show = () => setTimeout(() => { nudge.hidden = false; requestAnimationFrame(() => { ready = true; sync(); }); }, 3000);
+    if (document.querySelector('.stage') || reduce) show();
+    else new MutationObserver((m, o) => { if (document.querySelector('.stage')) { o.disconnect(); show(); } }).observe(document.body, { subtree: true, attributes: true, attributeFilter: ['class'] });
+  })();
 
   // Scroll reveals, armed only for elements that start below the first screen
   if ('IntersectionObserver' in window && !reduce) {
@@ -1719,6 +1834,11 @@
     for (let i = 1; i <= maxGuests; i++) sel.add(new Option(i, i));
     sel.value = Math.min(2, maxGuests);
   }
+  // Leaving time uses the same hour list as arrival; default: evening of the wedding day
+  $('rsvp-ltime').innerHTML = $('rsvp-time').innerHTML;
+  $('rsvp-ltime').value = '6 PM';
+  // Hours since the start of 20 Dec, to check that leaving comes after arriving
+  const at = (day, time) => { const [n, ap] = time.split(' '); return (parseInt(day) - 20) * 24 + (+n % 12) + (ap === 'PM' ? 12 : 0); };
   function syncEvents() {
     const no = $('rsvp-no').checked;
     $('rsvp-events').setAttribute('aria-disabled', no ? 'true' : 'false');
@@ -1728,14 +1848,18 @@
   form.addEventListener('change', syncEvents);
 
   const DAY_HI = { '20 Dec': '20 दिसंबर', '21 Dec': '21 दिसंबर' };
+  const leaveHi = r => 'प्रस्थान: ' + (DAY_HI[r.lday] || r.lday) + ', लगभग ' + timeHi(r.ltime);
   const TRAVEL_HI = { Train: 'ट्रेन', Bus: 'बस', Car: 'कार', Flight: 'फ़्लाइट' };
   const timeHi = t => { const [n, ap] = t.split(' '), h = +n; return (ap === 'AM' ? 'प्रातः' : h === 12 || h < 4 ? 'दोपहर' : h < 7 ? 'सायं' : 'रात्रि') + ' ' + n + ' बजे'; };
   function compose(r) {
     const lines = ['RSVP: प्रीति और विवेक का विवाह', '', 'नाम: ' + r.name];
     if (r.attending === 'yes') {
-      lines.push('सहर्ष स्वीकार 🙏', 'अतिथि संख्या: ' + r.count, 'आगमन: ' + (DAY_HI[r.day] || r.day) + ', लगभग ' + timeHi(r.time), 'यात्रा: ' + (TRAVEL_HI[r.travel] || r.travel));
+      lines.push('सहर्ष स्वीकार 🙏', 'अतिथि संख्या: ' + r.count, 'आगमन: ' + (DAY_HI[r.day] || r.day) + ', लगभग ' + timeHi(r.time));
+      if (r.lday) lines.push(leaveHi(r));
+      lines.push('यात्रा: ' + (TRAVEL_HI[r.travel] || r.travel));
     } else if (r.attending === 'maybe') {
       lines.push('आने की पूरी कोशिश करेंगे, जल्द पुष्टि करेंगे 🤞', 'अतिथि संख्या: ' + r.count, 'आगमन: ' + (DAY_HI[r.day] || r.day) + ', लगभग ' + timeHi(r.time));
+      if (r.lday) lines.push(leaveHi(r));
       if (r.travel) lines.push('यात्रा: ' + (TRAVEL_HI[r.travel] || r.travel));
     } else {
       lines.push('क्षमा करें, हम उपस्थित नहीं हो पाएँगे। दूर से ही उत्सव में शामिल हैं, स्नेह और आशीर्वाद सहित 💐');
@@ -1745,7 +1869,7 @@
   }
   const sheetParams = r => new URLSearchParams({
     name: r.name, attending: r.attending, count: r.count,
-    arrival: r.day + ' ' + r.time, travel: r.travel, note: r.note, guestName
+    arrival: r.day + ' ' + r.time, departure: r.lday ? r.lday + ' ' + r.ltime : '', travel: r.travel, note: r.note, guestName
   });
   function setStatus(r) {
     const sheet = $('rsvp-sheet');
@@ -1798,11 +1922,14 @@
       attending: form.querySelector('input[name="attending"]:checked').value,
       day: $('rsvp-day').value,
       time: $('rsvp-time').value,
+      lday: $('rsvp-lday').value,
+      ltime: $('rsvp-ltime').value,
       travel: (form.querySelector('input[name="travel"]:checked') || {}).value || '',
       note: $('rsvp-note').value.trim()
     };
     const err = !r.name ? 'कृपया अपना नाम लिखिए, ताकि परिवार को पता चले कि उत्तर किसने दिया है।'
-      : r.attending === 'yes' && !r.travel ? 'कृपया बताइए कि आप कैसे यात्रा करेंगे: ट्रेन, बस, कार या फ़्लाइट।' : '';
+      : r.attending === 'yes' && !r.travel ? 'कृपया बताइए कि आप कैसे यात्रा करेंगे: ट्रेन, बस, कार या फ़्लाइट।'
+      : r.attending !== 'no' && at(r.lday, r.ltime) <= at(r.day, r.time) ? 'प्रस्थान का समय आगमन से पहले है। कृपया तिथि और समय जाँच लें।' : '';
     $('rsvp-error').textContent = err;
     $('rsvp-error').hidden = !err;
     if (err) return;
@@ -1820,6 +1947,8 @@
     ($({ no: 'rsvp-no', maybe: 'rsvp-maybe' }[saved.attending] || 'rsvp-yes')).checked = true;
     if (saved.day) $('rsvp-day').value = saved.day;
     if (saved.time) $('rsvp-time').value = saved.time;
+    if (saved.lday) $('rsvp-lday').value = saved.lday;
+    if (saved.ltime) $('rsvp-ltime').value = saved.ltime;
     form.querySelectorAll('input[name="travel"]').forEach(i => i.checked = i.value === saved.travel);
     $('rsvp-note').value = saved.note || '';
     showDone(saved);

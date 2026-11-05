@@ -504,7 +504,13 @@
 
   /* ---------- Closing ---------- */
   .closing { display: grid; justify-items: center; gap: 22px; text-align: center; }
-  .closing .arch { width: 100%; aspect-ratio: 2 / 3; }   /* last-page image fills the column */
+  /* Last page: baby Shaurya's invitation, his picture fading softly into the sky */
+  .shaurya { margin: 0; display: grid; justify-items: center; gap: 6px; width: 100%; }
+  .shaurya img { display: block; width: min(360px, 100%); height: auto; }
+  .shaurya figcaption { display: grid; justify-items: center; gap: 10px; margin-top: -24px; }
+  .shaurya-hi { font-family: var(--font-deva); font-size: var(--step-2); line-height: 1.45; color: var(--rose); }
+  .shaurya-en { font-family: var(--font-body); font-style: italic; font-weight: 600; font-size: var(--step-1); line-height: 1.35; color: var(--gold-deep); }
+  .shaurya-sign { font-family: var(--font-script); font-size: 2.6rem; line-height: 1.1; color: var(--rose); }
   .closing .script { font-size: var(--step-3); }
 
   /* ---------- Curtain gate (opening animation) ---------- */
@@ -1483,7 +1489,14 @@
 
     <!-- Closing -->
     <section class="closing">
-      <div class="arch reveal"><img src="images/cover.webp" alt="The couple's hands tied together with a wedding knot beneath the P&amp;V monogram" loading="lazy"></div>
+      <figure class="shaurya reveal">
+        <img src="images/closing-shaurya.webp" alt="Baby Shaurya smiling in a green teddy-bear romper" loading="lazy">
+        <figcaption>
+          <p class="shaurya-hi" lang="hi">मेरी मासी की शादी में<br>जलूल-जलूल आना!</p>
+          <p class="shaurya-en">Meri masi ki shadi mein<br>jalul-jalul aana!</p>
+          <p class="shaurya-sign">– Shaurya</p>
+        </figcaption>
+      </figure>
       <p class="script reveal">With love, the Ranka Sethia &amp; Bothra families</p>
       <img class="it-hearts" src="images/ic-hearts.webp" alt="">
     </section>

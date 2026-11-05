@@ -2005,6 +2005,8 @@
     const r = local.get();
     if (r) { r.sent = 'opened'; local.set(r); setStatus(r); }
   });
+  // The form collapses into the reply, so bring the guest back to the top of the RSVP section
+  const toRsvp = () => requestAnimationFrame(() => $('rsvp').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' }));
   form.addEventListener('submit', e => {
     e.preventDefault();
     const r = {
@@ -2026,9 +2028,10 @@
     r.sent = '';
     local.set(r);
     showDone(r);
+    toRsvp();
     if (RSVP_SHEET_URL) sendToSheet(r);
   });
-  $('rsvp-edit').addEventListener('click', () => { $('rsvp-done').hidden = true; $('rsvp-intro').hidden = false; form.hidden = false; });
+  $('rsvp-edit').addEventListener('click', () => { $('rsvp-done').hidden = true; $('rsvp-intro').hidden = false; form.hidden = false; toRsvp(); });
   const saved = local.get();
   if (saved && saved.name) {
     $('rsvp-name').value = saved.name;

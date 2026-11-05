@@ -379,6 +379,15 @@
   .battle-copy { max-width: 34ch; line-height: 1.5; }
   .battle-copy em, .wcard--haldi .wc-copy em { color: #c2410c; font-weight: 600; font-style: normal; }
   .battle-hint { font-size: .85rem; font-style: italic; opacity: .75; }
+  .team--dhol { background: linear-gradient(160deg, #e8c89a, #b27a45); color: #3d0d1a; }
+  .team--phool { background: linear-gradient(160deg, #f59e0b, #c2410c); }
+  .team .tally { font-size: .62rem; letter-spacing: .12em; opacity: .85; min-height: 1em; }
+  .team.hit { animation: thump .35s ease-out; }
+  .wcard--wedding .battle-hint { color: #f1e4d3; opacity: .85; }
+  .team--sparkle { background: linear-gradient(160deg, #f6d58e, #c99a3c); color: #3a1a2a; }
+  .team--story { background: linear-gradient(160deg, #d9679a, #8c3f87); }
+  .wcard--sangeet .battle-hint { color: #f1e4d3; opacity: .85; }
+  .confetti-glyph { position: fixed; z-index: 60; pointer-events: none; font-size: 22px; line-height: 1; animation: pop 1.3s cubic-bezier(.2, .6, .4, 1) forwards; }
   .confetti-bit { position: fixed; z-index: 60; width: 8px; height: 12px; pointer-events: none; border-radius: 2px;
     animation: pop 1.3s cubic-bezier(.2, .6, .4, 1) forwards; }
   @keyframes pop {
@@ -1303,9 +1312,9 @@
             </div>
             <ul class="chips"><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M14 5h5v5M5 5l6 6M13 13l6 6M19 14v5h-5"/></svg><span>दूल्हा पक्ष बनाम दुल्हन पक्ष</span></li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h18v3a2 2 0 0 0 0 4v3H3v-3a2 2 0 0 0 0-4z"/><path d="M9 7v10" stroke-dasharray="2 2"/></svg><span>कार्निवल के मज़ेदार खेल</span></li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c3.6 0 6 2.8 6 6.2 0 3.6-3 6.8-6 6.8s-6-3.2-6-6.8C6 5.8 8.4 3 12 3z"/><path d="M11 16l1 1.5 1-1.5M12 17.5c0 2-1.5 2.5-1.5 4"/></svg><span>पूरी धमाल-मस्ती</span></li><li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="1.5"/><path d="M12 4v16M4 12h16M6.3 6.3l11.4 11.4M17.7 6.3 6.3 17.7"/></svg><span>कार्निवल के चटख रंग, मस्ती में रंगने को तैयार</span></li></ul>
             <div class="teams">
-              <button type="button" class="team team--groom" data-team="groom"><small>टीम</small>दूल्हा</button>
+              <button type="button" class="team team--groom" data-team="groom"><small>टीम</small>दूल्हा<span class="tally"></span></button>
               <span class="vs">VS</span>
-              <button type="button" class="team team--bride" data-team="bride"><small>टीम</small>दुल्हन</button>
+              <button type="button" class="team team--bride" data-team="bride"><small>टीम</small>दुल्हन<span class="tally"></span></button>
             </div>
             <p class="battle-hint">अपने पक्ष का हौसला बढ़ाने के लिए टैप करें</p>
           </div>
@@ -1325,6 +1334,12 @@
             </div>
             <p class="wc-copy">कोई ऐसा गाना चुनिए जो कहानी कहे, और प्रीति व विवेक के लिए उस पर थिरकिए!</p>
             <ul class="chips"><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg><span>कहानी वाला कोई गाना चुनिए</span></li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-7-9.6A4 4 0 0 1 12 8a4 4 0 0 1 7 2.4C19 15.6 12 20 12 20z"/></svg><span>उनकी कहानी या आपकी</span></li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 16c4 0 7-1 10-5l3-3c2 2 4 5 5 8H3z"/><path d="M5 16v3M20 16l-1 3"/></svg><span>अपनी टोली के साथ थिरकिए</span></li><li><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="9" width="18" height="11" rx="1.5"/><path d="M3 9l2-5 16 0-2 5M8 4l-2 5M13 4l-2 5M18 4l-2 5"/></svg><span>लाइट्स, कैमरा, धमाका!</span></li></ul>
+            <div class="teams">
+              <button type="button" class="team team--sparkle" data-team="sparkle"><small>टैप करें</small>चमक<span class="tally"></span></button>
+              <span class="vs">&amp;</span>
+              <button type="button" class="team team--story" data-team="story"><small>टैप करें</small>कहानी<span class="tally"></span></button>
+            </div>
+            <p class="battle-hint">मंच को जगमगाने के लिए टैप करें</p>
           </div>
         </article>
 
@@ -1334,6 +1349,12 @@
             <p class="wc-kicker" lang="hi">पधारो सा</p>
             <h3 class="wc-title">विवाह</h3>
             <p class="wc-theme">राजस्थानी पारंपरिक थीम</p>
+            <div class="teams">
+              <button type="button" class="team team--dhol" data-team="dhol"><small>टैप करें</small>ढोल<span class="tally"></span></button>
+              <span class="vs">&amp;</span>
+              <button type="button" class="team team--phool" data-team="phool"><small>टैप करें</small>फूल<span class="tally"></span></button>
+            </div>
+            <p class="battle-hint">महल पर फूल बरसाने के लिए टैप करें</p>
           </div>
         </article>
       </div>
@@ -1696,16 +1717,27 @@
     });
   })();
 
-  // Haldi battle: cheer for a side with a burst of team-coloured confetti
-  const TEAM = { groom: ['#3b86c8', '#2d5c92', '#f2b705', '#ffffff'], bride: ['#a77bd9', '#8c62c4', '#f2b705', '#ffffff'] };
+  // Carnival battle, Sangeet stage and Wedding: tap a button for a burst of team-coloured confetti (with emoji) and a running tally
+  const TEAM = {
+    groom: ['#3b86c8', '#2d5c92', '#f2b705', '#ffffff'], bride: ['#a77bd9', '#8c62c4', '#f2b705', '#ffffff'],
+    sparkle: ['#f6d58e', '#e8c89a', '#ffffff', '#c99a3c'], story: ['#d9679a', '#8c3f87', '#f6d58e', '#ffffff'],
+    dhol: ['#e8c89a', '#b27a45', '#f1d6ad', '#ffffff'], phool: ['#f59e0b', '#c2410c', '#e11d74', '#f6d58e']
+  };
+  const GLYPHS = { sparkle: ['✨', '⭐', '💫'], story: ['🎬', '🎵', '🎶', '🎭'], dhol: ['🥁', '🎺', '👑', '✨'], phool: ['🌸', '🌼', '🪔', '🏵️'] };
   document.querySelectorAll('.team').forEach(btn => btn.addEventListener('click', () => {
+    const tally = btn.querySelector('.tally');
+    if (tally) tally.textContent = '× ' + (btn._n = (btn._n || 0) + 1);
     if (reduce) return;
+    btn.classList.remove('hit'); void btn.offsetWidth; btn.classList.add('hit');
+    const team = btn.dataset.team, glyphs = GLYPHS[team];
     const r = btn.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
     for (let i = 0; i < 36; i++) {
       const c = document.createElement('i');
-      c.className = 'confetti-bit';
+      const glyph = glyphs && i % 4 === 0;
+      c.className = glyph ? 'confetti-glyph' : 'confetti-bit';
+      if (glyph) c.textContent = glyphs[(i / 4) % glyphs.length];
       const a = Math.random() * Math.PI * 2, d = 60 + Math.random() * 140;
-      c.style.cssText = `left:${cx}px;top:${cy}px;background:${TEAM[btn.dataset.team][i % 4]};--dx:${Math.cos(a) * d}px;--dy:${Math.sin(a) * d - 40}px;--r:${Math.random() * 720 - 360}deg`;
+      c.style.cssText = `left:${cx}px;top:${cy}px;${glyph ? '' : 'background:' + TEAM[team][i % 4] + ';'}--dx:${Math.cos(a) * d}px;--dy:${Math.sin(a) * d - 40}px;--r:${Math.random() * 720 - 360}deg`;
       document.body.appendChild(c);
       setTimeout(() => c.remove(), 1400);
     }

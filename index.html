@@ -354,6 +354,11 @@
   .team--bride { background: linear-gradient(160deg, #a77bd9, #8c62c4); }
   .team--sparkle { background: linear-gradient(160deg, #f6d58e, #c99a3c); color: #3a1a2a; }
   .team--story { background: linear-gradient(160deg, #d9679a, #8c3f87); }
+  .team--dhol { background: linear-gradient(160deg, #e8c89a, #b27a45); color: #3d0d1a; }
+  .team--phool { background: linear-gradient(160deg, #f59e0b, #c2410c); }
+  .team .tally { font-size: .62rem; letter-spacing: .12em; opacity: .85; min-height: 1em; }
+  .team.hit { animation: thump .35s ease-out; }
+  .wcard--wedding .battle-hint { color: #f1e4d3; opacity: .85; }
   .wcard--sangeet .battle-hint { color: #f1e4d3; opacity: .85; }
   .wc-tag[lang="hi"] { font-family: var(--font-deva); font-size: 1.5rem; line-height: 1.4; margin-top: 4px; }
   .confetti-glyph { position: fixed; z-index: 60; pointer-events: none; font-size: 22px; line-height: 1; animation: pop 1.3s cubic-bezier(.2, .6, .4, 1) forwards; }
@@ -1287,9 +1292,9 @@
             </div>
             <ul class="chips"><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M14 5h5v5M5 5l6 6M13 13l6 6M19 14v5h-5"/></svg><span>Groom’s side vs bride’s side</span></li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h18v3a2 2 0 0 0 0 4v3H3v-3a2 2 0 0 0 0-4z"/><path d="M9 7v10" stroke-dasharray="2 2"/></svg><span>Fun carnival games</span></li><li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c3.6 0 6 2.8 6 6.2 0 3.6-3 6.8-6 6.8s-6-3.2-6-6.8C6 5.8 8.4 3 12 3z"/><path d="M11 16l1 1.5 1-1.5M12 17.5c0 2-1.5 2.5-1.5 4"/></svg><span>Full-on dhamaal masti</span></li><li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="1.5"/><path d="M12 4v16M4 12h16M6.3 6.3l11.4 11.4M17.7 6.3 6.3 17.7"/></svg><span>Carnival brights, ready to get messy</span></li></ul>
             <div class="teams">
-              <button type="button" class="team team--groom" data-team="groom"><small>Team</small>Groom</button>
+              <button type="button" class="team team--groom" data-team="groom"><small>Team</small>Groom<span class="tally"></span></button>
               <span class="vs">VS</span>
-              <button type="button" class="team team--bride" data-team="bride"><small>Team</small>Bride</button>
+              <button type="button" class="team team--bride" data-team="bride"><small>Team</small>Bride<span class="tally"></span></button>
             </div>
             <p class="battle-hint">Tap your side to cheer</p>
           </div>
@@ -1315,9 +1320,9 @@
             <p class="wc-sub">Lights. Camera. Action!</p>
             <p class="wc-copy">Let’s dance our way into unforgettable memories!</p>
             <div class="teams">
-              <button type="button" class="team team--sparkle" data-team="sparkle"><small>Tap for</small>Sparkle</button>
+              <button type="button" class="team team--sparkle" data-team="sparkle"><small>Tap for</small>Sparkle<span class="tally"></span></button>
               <span class="vs">&amp;</span>
-              <button type="button" class="team team--story" data-team="story"><small>Tap for</small>Story</button>
+              <button type="button" class="team team--story" data-team="story"><small>Tap for</small>Story<span class="tally"></span></button>
             </div>
             <p class="battle-hint">Tap to light up the stage</p>
           </div>
@@ -1334,6 +1339,12 @@
             <p class="wc-tag" lang="hi">थारी मौजूदगी, म्हारी खुशी!</p>
             <p class="wc-copy">Your presence will make our celebration even more special.</p>
             <p class="wc-tag" lang="hi">पधारो सा, म्हारे आंगणे! ❤️</p>
+            <div class="teams">
+              <button type="button" class="team team--dhol" data-team="dhol"><small>Tap for</small>Dhol<span class="tally"></span></button>
+              <span class="vs">&amp;</span>
+              <button type="button" class="team team--phool" data-team="phool"><small>Tap for</small>Phool<span class="tally"></span></button>
+            </div>
+            <p class="battle-hint">Tap to shower the palace with petals</p>
           </div>
         </article>
       </div>
@@ -1674,11 +1685,15 @@
   // Carnival battle and Sangeet stage: tap a button for a burst of team-coloured confetti (Sangeet adds sparkles and music notes)
   const TEAM = {
     groom: ['#3b86c8', '#2d5c92', '#f2b705', '#ffffff'], bride: ['#a77bd9', '#8c62c4', '#f2b705', '#ffffff'],
-    sparkle: ['#f6d58e', '#e8c89a', '#ffffff', '#c99a3c'], story: ['#d9679a', '#8c3f87', '#f6d58e', '#ffffff']
+    sparkle: ['#f6d58e', '#e8c89a', '#ffffff', '#c99a3c'], story: ['#d9679a', '#8c3f87', '#f6d58e', '#ffffff'],
+    dhol: ['#e8c89a', '#b27a45', '#f1d6ad', '#ffffff'], phool: ['#f59e0b', '#c2410c', '#e11d74', '#f6d58e']
   };
-  const GLYPHS = { sparkle: ['✨', '⭐', '💫'], story: ['🎬', '🎵', '🎶', '🎭'] };
+  const GLYPHS = { sparkle: ['✨', '⭐', '💫'], story: ['🎬', '🎵', '🎶', '🎭'], dhol: ['🥁', '🎺', '👑', '✨'], phool: ['🌸', '🌼', '🪔', '🏵️'] };
   document.querySelectorAll('.team').forEach(btn => btn.addEventListener('click', () => {
+    const tally = btn.querySelector('.tally');
+    if (tally) tally.textContent = '× ' + (btn._n = (btn._n || 0) + 1);
     if (reduce) return;
+    btn.classList.remove('hit'); void btn.offsetWidth; btn.classList.add('hit');
     const team = btn.dataset.team, glyphs = GLYPHS[team];
     const r = btn.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
     for (let i = 0; i < 36; i++) {

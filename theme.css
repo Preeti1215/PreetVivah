@@ -152,3 +152,17 @@ a { color: var(--bronze); text-underline-offset: 3px; }
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
 }
+
+/* Blessing: the charming highlight line under the couple photo */
+.blessing {
+  display: grid; justify-items: center; gap: 2px; margin: 4px 0;
+  font-family: var(--font-script); font-weight: 400; color: var(--bronze);
+  font-size: clamp(1.9rem, 1.4rem + calc(2.4 * var(--vw)), 3rem); line-height: 1.2; text-align: center;
+  text-shadow: 0 0 14px #fff3d1, 0 0 30px #d9a94e55;
+}
+.blessing::before, .blessing::after {
+  content: "✦"; font-family: Georgia, serif; font-size: .38em; color: var(--gold); text-shadow: none; letter-spacing: 0;
+}
+.blessing::before { margin-bottom: 4px; }
+.blessing::after { margin-top: 4px; }
+html[lang="hi"] .blessing { font-family: var(--font-deva); line-height: 1.5; font-size: clamp(1.4rem, 1.1rem + calc(1.6 * var(--vw)), 2.1rem); letter-spacing: 0; }

@@ -1003,10 +1003,14 @@
   .it-what h3 { font-family: var(--font-body); font-weight: 500; font-size: 1.12rem; line-height: 1.15; color: #4a2f19; }
   .it-venue { display: block; margin-top: 2px; font-family: var(--font-display); font-size: .62rem; letter-spacing: .2em; text-transform: uppercase; color: #7b5a3e; }
   .it-note { display: block; font-style: italic; font-size: .8rem; color: #7b5a3e; }
-  .it-break { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 4px 0; }
-  .it-break::before, .it-break::after { content: ""; flex: 1; max-width: 70px; height: 1px; background: #a9784a; }
-  .it-break .sprig { width: 40px; }
-  .it-break .it-hearts { width: 46px; }
+  /* Side-to-side days: swipe from Dec 20 to Dec 21, the next day peeking in at the edge */
+  .it-days { display: grid; grid-auto-flow: column; grid-auto-columns: 90%; gap: 14px; align-items: start;
+    overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: none; padding: 4px 2px 10px; }
+  .it-days::-webkit-scrollbar { display: none; }
+  .it-slide { scroll-snap-align: center; display: grid; gap: 18px; align-content: start; padding: 18px 8px 20px;
+    border-radius: 22px; background: #fffdf8b3; border: 1px solid #d9b98a80; box-shadow: 0 14px 30px -22px #6b422066; }
+  #it-dots { margin-top: 0; }
+  .it-hint { text-align: center; font-style: italic; font-size: .85rem; color: #7b5a3e; margin-top: -8px; }
 
   /* Our story: a swipeable row of polaroids */
   #story { background: var(--hearts) 0 0 / 260px 320px repeat, url("images/sky.webp") center top / 100% auto repeat-y; padding-inline: 0; }
@@ -1225,7 +1229,7 @@
         </div>
 
         <div class="cta-row rise" style="--d:1850">
-          <a class="btn btn--solid" href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=Preeti%20%26%20Vivek%20%E2%80%94%20Wedding&amp;dates=20261220T043000Z/20261221T113000Z&amp;location=Treasure%20Island%2C%20Lonavala&amp;details=Carnival%20%26%20Sangeet%20on%2020%20Dec%2C%20Barat%20%26%20Phera%20on%2021%20Dec." target="_blank" rel="noopener">Add to calendar</a>
+          <a class="btn btn--solid" href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=Preeti%20%26%20Vivek%20%E2%80%94%20Wedding&amp;dates=20261220T043000Z/20261221T113000Z&amp;location=Treasure%20Island%2C%20Lonavala&amp;details=Carnival%20%26%20Sangeet%20on%2020%20Dec%2C%20Barat%2C%20Sneh%20Milan%20%26%20Hast%20Milaap%20on%2021%20Dec." target="_blank" rel="noopener">Add to calendar</a>
           <a class="btn" href="#rsvp">RSVP</a>
           <a class="btn" href="https://www.google.com/maps/search/?api=1&amp;query=Treasure+Island+Resort+Lonavala" target="_blank" rel="noopener">Directions</a>
           <a class="btn" id="photos-link" href="#" target="_blank" rel="noopener">Upload wedding memories</a>
@@ -1268,6 +1272,8 @@
       </div>
 
       <div class="it reveal">
+        <div class="it-days" id="it-days">
+        <div class="it-slide">
         <div class="it-day"><img class="sprig" src="images/ic-sprig.webp" alt=""><span class="plaque">Dec 20</span><img class="sprig sprig--r" src="images/ic-sprig.webp" alt=""></div>
         <ol class="it-list">
           <li><time>10:00 – 13:00</time><i class="it-node" aria-hidden="true"></i><div class="it-what"><img src="images/ic-suitcase.webp" alt=""><div><h3>Check-in</h3></div></div></li>
@@ -1275,17 +1281,24 @@
           <li><time>15:00 – 17:00</time><i class="it-node" aria-hidden="true"></i><div class="it-what"><img src="images/ic-haldi.webp" alt=""><div><h3>Carnival &amp; Hi-tea</h3><span class="it-venue">Poolside</span></div></div></li>
           <li><time>18:30 – 22:00</time><i class="it-node" aria-hidden="true"></i><div class="it-what"><img src="images/ic-notes.webp" alt=""><div><h3>Sangeet &amp; Dinner</h3><span class="it-venue">Lawn</span><span class="it-note">Pre-sunset dinner 17:30</span></div></div></li>
         </ol>
+        </div>
 
-        <div class="it-break" aria-hidden="true"><img class="sprig" src="images/ic-sprig.webp" alt=""><img class="it-hearts" src="images/ic-hearts.webp" alt=""><img class="sprig sprig--r" src="images/ic-sprig.webp" alt=""></div>
-
+        <div class="it-slide">
         <div class="it-day"><img class="sprig" src="images/ic-sprig.webp" alt=""><span class="plaque">Dec 21</span><img class="sprig sprig--r" src="images/ic-sprig.webp" alt=""></div>
         <ol class="it-list">
           <li><time>8:00 – 9:30</time><i class="it-node" aria-hidden="true"></i><div class="it-what"><img src="images/ic-teacup.webp" alt=""><div><h3>Breakfast</h3><span class="it-venue">Dome</span></div></div></li>
           <li><time>8:30 – 9:30</time><i class="it-node" aria-hidden="true"></i><div class="it-what"><img src="images/ic-dhol.webp" alt=""><div><h3>Barat</h3><span class="it-venue">Near the entry gate</span></div></div></li>
-          <li><time>10:00 – 12:00</time><i class="it-node" aria-hidden="true"></i><div class="it-what"><img src="images/ic-mandap.webp" alt=""><div><h3>Phera</h3><span class="it-venue">Poolside</span></div></div></li>
+          <li><time>10:00 – 12:00</time><i class="it-node" aria-hidden="true"></i><div class="it-what"><img src="images/ic-mandap.webp" alt=""><div><h3>Sneh Milan &amp; Hast Milaap</h3><span class="it-venue">Poolside</span></div></div></li>
           <li><time>12:00 – 14:00</time><i class="it-node" aria-hidden="true"></i><div class="it-what"><img src="images/ic-sweets.webp" alt=""><div><h3>Lunch</h3><span class="it-venue">Dome</span></div></div></li>
           <li><time>15:30 – 17:00</time><i class="it-node" aria-hidden="true"></i><div class="it-what"><img src="images/ic-it-hitea.webp" alt=""><div><h3>Hi-tea</h3><span class="it-venue">Dome</span></div></div></li>
         </ol>
+        </div>
+        </div>
+        <div class="wc-dots" id="it-dots" role="group" aria-label="Choose a day">
+          <button type="button" aria-label="20 December" aria-current="true"></button>
+          <button type="button" aria-label="21 December" aria-current="false"></button>
+        </div>
+        <p class="it-hint">Swipe for the next day</p>
       </div>
     </section>
 
@@ -1828,22 +1841,25 @@
   tick(); setInterval(tick, 1000);
 
 
-  // ---- Wardrobe carousel dots (phones) ----
-  const looks = $('looks');
-  const dots = [...document.querySelectorAll('#look-dots button')];
-  const lookEls = [...looks.querySelectorAll('.wcard')];
-  const centreOf = el => el.offsetLeft - looks.offsetLeft + el.offsetWidth / 2;
-  dots.forEach((d, i) => d.addEventListener('click', () => looks.scrollTo({ left: centreOf(lookEls[i]) - looks.clientWidth / 2, behavior: reduce ? 'auto' : 'smooth' })));
-  let raf = 0;
-  looks.addEventListener('scroll', () => {
-    cancelAnimationFrame(raf);
-    raf = requestAnimationFrame(() => {
-      const mid = looks.scrollLeft + looks.clientWidth / 2;
-      let best = 0, bestD = Infinity;
-      lookEls.forEach((el, i) => { const c = centreOf(el), dd = Math.abs(c - mid); if (dd < bestD) { bestD = dd; best = i; } });
-      dots.forEach((d, i) => d.setAttribute('aria-current', String(i === best)));
-    });
-  }, { passive: true });
+  // ---- Side-to-side sliders (wardrobe cards, itinerary days): dots follow the swipe and jump to a slide ----
+  function slider(track, dotsSel, itemSel) {
+    const dots = [...document.querySelectorAll(dotsSel + ' button')];
+    const items = [...track.querySelectorAll(itemSel)];
+    const centreOf = el => el.getBoundingClientRect().left - track.getBoundingClientRect().left + track.scrollLeft + el.offsetWidth / 2;
+    dots.forEach((d, i) => d.addEventListener('click', () => track.scrollTo({ left: centreOf(items[i]) - track.clientWidth / 2, behavior: reduce ? 'auto' : 'smooth' })));
+    let raf = 0;
+    track.addEventListener('scroll', () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        const mid = track.scrollLeft + track.clientWidth / 2;
+        let best = 0, bestD = Infinity;
+        items.forEach((el, i) => { const dd = Math.abs(centreOf(el) - mid); if (dd < bestD) { bestD = dd; best = i; } });
+        dots.forEach((d, i) => d.setAttribute('aria-current', String(i === best)));
+      });
+    }, { passive: true });
+  }
+  slider($('looks'), '#look-dots', '.wcard');
+  slider($('it-days'), '#it-dots', '.it-slide');
 
   // ---- RSVP: saves the reply to the Google Sheet and shows a thank-you message ----
   const form = $('rsvp-form');

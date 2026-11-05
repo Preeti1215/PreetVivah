@@ -1473,12 +1473,6 @@
         <h3 id="rsvp-thanks">धन्यवाद</h3>
         <p id="rsvp-status" aria-live="polite"></p>
         <a class="btn btn--solid" id="rsvp-sheet" href="#" target="_blank" rel="noopener" hidden>मेरे RSVP की पुष्टि करें</a>
-        <pre id="rsvp-message"></pre>
-        <div class="cta-row">
-          <a class="btn" id="rsvp-whatsapp" href="#" target="_blank" rel="noopener">WhatsApp पर भेजें</a>
-          <button class="btn" type="button" id="rsvp-copy">संदेश कॉपी करें</button>
-        </div>
-        <p class="hint" id="rsvp-copy-status" aria-live="polite"></p>
         <button class="linkish" type="button" id="rsvp-edit">मेरा उत्तर बदलें</button>
       </div>
     </section>
@@ -1920,7 +1914,7 @@
     const sheet = $('rsvp-sheet');
     sheet.hidden = true;
     if (!RSVP_SHEET_URL) {
-      $('rsvp-status').textContent = 'यह आपका उत्तर है। इसे WhatsApp पर परिवार को भेजें, या कॉपी करके किसी भी संदेश में चिपका दें।';
+      $('rsvp-status').textContent = 'आपका उत्तर इस डिवाइस पर सहेज लिया गया है।';
     } else if (r.sent === 'saved') {
       $('rsvp-status').textContent = 'आपका RSVP परिवार तक पहुँच गया है। आप इसे कभी भी बदल सकते हैं।';
     } else if (r.sent === 'opened') {
@@ -1932,18 +1926,12 @@
     }
   }
   function showDone(r) {
-    const msg = compose(r);
-    $('rsvp-message').textContent = msg;
     const first = r.name.split(' ')[0];
     const pic = { yes: 'images/rsvp-yes.webp', maybe: 'images/rsvp-maybe.webp', no: 'images/rsvp-no.webp' }[r.attending];
     if (pic) $('rsvp-pic').src = pic;
     $('rsvp-pic').hidden = !pic;
     $('rsvp-thanks').textContent = r.attending === 'yes' ? 'आपसे वहाँ मिलते हैं, ' + first + '!' : r.attending === 'maybe' ? 'आशा है आप आएँगे, ' + first + '!' : 'हमें आपकी कमी खलेगी, ' + first;
-    $('rsvp-whatsapp').href = 'https://wa.me/' + RSVP_WHATSAPP + '?text=' + encodeURIComponent(msg);
-    $('rsvp-whatsapp').textContent = RSVP_SHEET_URL ? 'WhatsApp पर भी भेजें' : 'WhatsApp पर भेजें';
-    $('rsvp-whatsapp').classList.toggle('btn--solid', !RSVP_SHEET_URL);
     if (RSVP_SHEET_URL) $('rsvp-sheet').href = RSVP_SHEET_URL + '?' + sheetParams(r);
-    $('rsvp-copy-status').textContent = '';
     setStatus(r);
     form.hidden = true;
     $('rsvp-done').hidden = false;
@@ -1987,7 +1975,6 @@
     if (RSVP_SHEET_URL) sendToSheet(r);
   });
   $('rsvp-edit').addEventListener('click', () => { $('rsvp-done').hidden = true; $('rsvp-intro').hidden = false; form.hidden = false; });
-  $('rsvp-copy').addEventListener('click', () => copyText($('rsvp-message').textContent, $('rsvp-message'), $('rsvp-copy-status'), 'कॉपी हो गया। इसे परिवार को भेजे जाने वाले संदेश में चिपका दें।'));
   const saved = local.get();
   if (saved && saved.name) {
     $('rsvp-name').value = saved.name;

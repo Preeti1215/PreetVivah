@@ -1854,6 +1854,8 @@
     set(v) { try { localStorage.setItem(RSVP_KEY, JSON.stringify(v)); } catch {} }
   };
   if (guest && !$('rsvp-name').value) $('rsvp-name').value = guest;
+  // A personalised link already says who is replying, so the name box is hidden and the link's name is used
+  if (guest) $('rsvp-name').closest('.field').style.display = 'none';
   if (!RSVP_SHEET_URL) $('rsvp-submit').textContent = 'Prepare my RSVP';
   // Guest count is limited by the personal link (default 1–6)
   {
@@ -1931,7 +1933,7 @@
   form.addEventListener('submit', e => {
     e.preventDefault();
     const r = {
-      name: $('rsvp-name').value.trim(),
+      name: (guest || $('rsvp-name').value).trim(),
       count: $('rsvp-count').value,
       attending: form.querySelector('input[name="attending"]:checked').value,
       day: $('rsvp-day').value,

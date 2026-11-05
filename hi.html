@@ -1390,7 +1390,7 @@
       <div class="section-head reveal">
         <h2>RSVP</h2>
         <img class="it-hearts" src="images/ic-hearts.webp" alt="">
-        <p>आपका साथ हमारे लिए बहुत खास है! कृपया बताइए कि क्या आप इस उत्सव में शामिल होंगे, ताकि हम इस अवसर को सबके लिए यादगार बना सकें।</p>
+        <p id="rsvp-intro">आपका साथ हमारे लिए बहुत खास है! कृपया बताइए कि क्या आप इस उत्सव में शामिल होंगे, ताकि हम इस अवसर को सबके लिए यादगार बना सकें।</p>
       </div>
 
       <form class="rsvp-form reveal" id="rsvp-form" novalidate>
@@ -1442,7 +1442,7 @@
             </div>
           </div>
           <fieldset class="field">
-            <legend>आप कैसे यात्रा करेंगे?</legend>
+            <legend>आप कैसे यात्रा करेंगे? (वैकल्पिक)</legend>
             <div class="choices choices--2">
               <label class="choice"><input type="radio" name="travel" value="Train"><span><svg class="ti" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h10a2 2 0 0 1 2 2v9a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3V5a2 2 0 0 1 2-2zM5 10h14M8 17l-2 4M16 17l2 4"/><circle cx="9" cy="13.5" r=".8"/><circle cx="15" cy="13.5" r=".8"/></svg>ट्रेन</span></label>
               <label class="choice"><input type="radio" name="travel" value="Bus"><span><svg class="ti" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1zM4 11h16M7 17v3M17 17v3"/><circle cx="8" cy="14" r=".8"/><circle cx="16" cy="14" r=".8"/></svg>बस</span></label>
@@ -1927,6 +1927,7 @@
     setStatus(r);
     form.hidden = true;
     $('rsvp-done').hidden = false;
+    $('rsvp-intro').hidden = true;
   }
   // Direct save works on a self-hosted copy; inside claude.ai it is blocked, so the guest confirms via the link.
   async function sendToSheet(r) {
@@ -1956,7 +1957,6 @@
       note: $('rsvp-note').value.trim()
     };
     const err = !r.name ? 'कृपया अपना नाम लिखिए, ताकि परिवार को पता चले कि उत्तर किसने दिया है।'
-      : r.attending === 'yes' && !r.travel ? 'कृपया बताइए कि आप कैसे यात्रा करेंगे: ट्रेन, बस, कार या फ़्लाइट।'
       : r.attending !== 'no' && at(r.lday, r.ltime) <= at(r.day, r.time) ? 'प्रस्थान का समय आगमन से पहले है। कृपया तिथि और समय जाँच लें।' : '';
     $('rsvp-error').textContent = err;
     $('rsvp-error').hidden = !err;
@@ -1966,7 +1966,7 @@
     showDone(r);
     if (RSVP_SHEET_URL) sendToSheet(r);
   });
-  $('rsvp-edit').addEventListener('click', () => { $('rsvp-done').hidden = true; form.hidden = false; });
+  $('rsvp-edit').addEventListener('click', () => { $('rsvp-done').hidden = true; $('rsvp-intro').hidden = false; form.hidden = false; });
   $('rsvp-copy').addEventListener('click', () => copyText($('rsvp-message').textContent, $('rsvp-message'), $('rsvp-copy-status'), 'कॉपी हो गया। इसे परिवार को भेजे जाने वाले संदेश में चिपका दें।'));
   const saved = local.get();
   if (saved && saved.name) {

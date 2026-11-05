@@ -417,7 +417,7 @@
   .wcard { --bd: #e9c86a; --ink: #3a2a1a; --accent: #6b3fa0; --tag: #2f7d4f;
     position: relative; padding: 10px 10px 30px; border-radius: 999px 999px 26px 26px; border: 2px solid var(--bd);
     box-shadow: 0 0 0 5px #fffdf8, 0 0 0 6px var(--bd), 0 30px 60px -36px #3a1a0a88; overflow: hidden; color: var(--ink); }
-  .wc-photo { border-radius: 999px 999px 14px 14px; overflow: hidden; aspect-ratio: 1 / .8; border: 1.5px solid color-mix(in srgb, var(--bd) 80%, #fff); }
+  .wc-photo { border-radius: 999px 999px 14px 14px; overflow: hidden; aspect-ratio: 1 / .7; border: 1.5px solid color-mix(in srgb, var(--bd) 80%, #fff); }
   .wc-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .wc-body { display: grid; justify-items: center; text-align: center; gap: 10px; padding: 18px 12px 0; }
   .wc-title { font-family: var(--font-script); font-weight: 400; font-size: clamp(3.4rem, 2.8rem + calc(2.4 * var(--vw)), 4.4rem); line-height: 1.05; color: var(--accent); }
@@ -959,7 +959,7 @@
      background, so no blend or fade is needed and the flowers sit crisply on top of the clouds */
   .card > .corner { width: 132px; mix-blend-mode: normal; -webkit-mask-image: none; mask-image: none; }
   .it-corner--br { transform: scale(-1, -1); }
-  /* Gentle hint on the first page: scroll down to play the quiz (stays until Our Story is in view) */
+  /* Gentle hint on the first page: scroll down to play the quiz (stays until the guest reaches Our Story) */
   .scroll-nudge { position: fixed; z-index: 41; left: 50%; bottom: calc(86px + env(safe-area-inset-bottom, 0px)); translate: -50% 0;
     display: inline-flex; align-items: center; gap: 8px; max-width: calc(100vw - 120px); padding: 9px 16px; border-radius: 999px;
     background: #fffaf0f2; border: 1px solid #d9a94e99; box-shadow: 0 8px 22px -10px #6b422066;
@@ -1777,15 +1777,16 @@
   }
 
   // Scroll hint: shows about 3 s after opening and stays while the guest is on the first page;
-  // hidden once Our Story comes into view, back again if they scroll up to the top
+  // hidden once the guest has scrolled down to Our Story, back again if they scroll up
   (() => {
     const nudge = $('scroll-nudge'), story = $('story');
     let ready = false, past = false;
     const sync = () => { nudge.classList.toggle('on', ready && !past); };
-    if ('IntersectionObserver' in window) {
-      new IntersectionObserver(es => es.forEach(e => { past = e.isIntersecting || e.boundingClientRect.top < 0; sync(); })).observe(story);
-    }
-    const show = () => setTimeout(() => { nudge.hidden = false; requestAnimationFrame(() => { ready = true; sync(); }); }, 3000);
+    // hide only once the guest has arrived at Our Story (its top is in the upper third of the screen)
+    const check = () => { past = story.getBoundingClientRect().top < innerHeight * 0.33; sync(); };
+    addEventListener('scroll', check, { passive: true });
+    addEventListener('resize', check);
+    const show = () => setTimeout(() => { nudge.hidden = false; requestAnimationFrame(() => { ready = true; check(); }); }, 3000);
     if (document.querySelector('.stage') || reduce) show();
     else new MutationObserver((m, o) => { if (document.querySelector('.stage')) { o.disconnect(); show(); } }).observe(document.body, { subtree: true, attributes: true, attributeFilter: ['class'] });
   })();

@@ -354,12 +354,13 @@
   .team--bride { background: linear-gradient(160deg, #a77bd9, #8c62c4); }
   .team--sparkle { background: linear-gradient(160deg, #f6d58e, #c99a3c); color: #3a1a2a; }
   .team--story { background: linear-gradient(160deg, #d9679a, #8c3f87); }
-  .team--dhol { background: linear-gradient(160deg, #e8c89a, #b27a45); color: #3d0d1a; }
-  .team--phool { background: linear-gradient(160deg, #f59e0b, #c2410c); }
   .team .tally { font-size: .62rem; letter-spacing: .12em; opacity: .85; min-height: 1em; }
   .team.hit { animation: thump .35s ease-out; }
-  .wcard--wedding .battle-hint { color: #f1e4d3; opacity: .85; }
   .wcard--sangeet .battle-hint { color: #f1e4d3; opacity: .85; }
+  /* Wedding: Juta Chupai bet, gold for the groom's side, rose for the bride's */
+  .team--jgroom { background: linear-gradient(160deg, #f1d6ad, #b27a45); color: #3e0b1b; }
+  .team--jbride { background: linear-gradient(160deg, #e07a98, #a3324f); }
+  .wcard--wedding .battle-hint { color: #f6e7d6; opacity: .85; }
   .wc-tag[lang="hi"] { font-family: var(--font-deva); font-size: 1.5rem; line-height: 1.4; margin-top: 4px; }
   .confetti-glyph { position: fixed; z-index: 60; pointer-events: none; font-size: 22px; line-height: 1; animation: pop 1.3s cubic-bezier(.2, .6, .4, 1) forwards; }
   .vs { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; font-family: var(--font-display); font-weight: 600; font-size: .95rem;
@@ -393,11 +394,20 @@
   .dress dd { margin: 0; text-align: left; }
 
   /* ---------- Wardrobe: themed invitation cards ---------- */
-  .wcards { display: grid; gap: clamp(36px, calc(6 * var(--vw)), 56px); max-width: 480px; margin: 0 auto; }
+  /* Side-to-side slider: one card per swipe, snapping into place */
+  .wcards { display: grid; grid-auto-flow: column; grid-auto-columns: min(86%, 420px); gap: 18px; align-items: start;
+    overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: none;
+    margin: 0 -22px; padding: 12px 22px 40px; scroll-padding-inline: 22px; }
+  .wcards::-webkit-scrollbar { display: none; }
+  .wcards > .wcard { scroll-snap-align: center; }
+  .wc-dots { display: flex; justify-content: center; gap: 10px; margin-top: -18px; }
+  .wc-dots button { width: 10px; height: 10px; padding: 0; border-radius: 50%; border: 1px solid var(--bronze); background: transparent; cursor: pointer; transition: background .3s, transform .3s; }
+  .wc-dots button[aria-current="true"] { background: var(--bronze); transform: scale(1.25); }
+  .wc-dots button:focus-visible { outline: 2px solid var(--cornflower); outline-offset: 3px; }
   .wcard { --bd: #e9c86a; --ink: #3a2a1a; --accent: #6b3fa0; --tag: #2f7d4f;
     position: relative; padding: 10px 10px 30px; border-radius: 999px 999px 26px 26px; border: 2px solid var(--bd);
     box-shadow: 0 0 0 5px #fffdf8, 0 0 0 6px var(--bd), 0 30px 60px -36px #3a1a0a88; overflow: hidden; color: var(--ink); }
-  .wc-photo { border-radius: 999px 999px 14px 14px; overflow: hidden; aspect-ratio: 1 / .8; border: 1.5px solid color-mix(in srgb, var(--bd) 80%, #fff); }
+  .wc-photo { border-radius: 999px 999px 14px 14px; overflow: hidden; aspect-ratio: 1 / .7; border: 1.5px solid color-mix(in srgb, var(--bd) 80%, #fff); }
   .wc-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .wc-body { display: grid; justify-items: center; text-align: center; gap: 10px; padding: 18px 12px 0; }
   .wc-title { font-family: var(--font-script); font-weight: 400; font-size: clamp(3.4rem, 2.8rem + calc(2.4 * var(--vw)), 4.4rem); line-height: 1.05; color: var(--accent); }
@@ -425,8 +435,9 @@
   .marquee { padding: 12px 34px; border-radius: 6px; font-family: var(--font-display); font-size: .9rem; letter-spacing: .34em; text-transform: uppercase; color: #f6e2b8;
     background: #3a2140; border: 4px dotted #f6d58e; box-shadow: 0 0 14px #f6d58e66, inset 0 0 10px #f6d58e33; animation: bulbs 1.6s steps(2) infinite; }
   @keyframes bulbs { 50% { border-color: #fff1c9; box-shadow: 0 0 20px #f6d58e99, inset 0 0 12px #f6d58e44; } }
-  .wcard--sangeet .wc-title { font-family: var(--font-display); font-weight: 600; font-size: clamp(1.7rem, 1.4rem + calc(1.6 * var(--vw)), 2.3rem); letter-spacing: .12em; line-height: 1.25; margin: 6px 0 10px; text-wrap: balance; text-shadow: 0 0 12px #ffe7b3cc, 0 0 30px #f6d58e66; }
-  .wcard--sangeet .wc-title + .wc-tag { font-size: 2rem; margin-top: 0; text-shadow: 0 0 10px #ffe7b3aa, 0 0 22px #f6d58e55; }
+  .wcard--sangeet .wc-title { text-shadow: 0 0 12px #ffe7b3cc, 0 0 30px #f6d58e66; }
+  /* Same script font as the Carnival title, kept on one line */
+  .wcard--sangeet .wc-title { white-space: nowrap; font-size: clamp(3rem, 2.6rem + calc(2 * var(--vw)), 4rem); }
   .wcard--sangeet .wc-theme { color: #f1e4d3; }
   .wcard--sangeet .swatch { color: #f1e4d3; }
   .wcard--sangeet .swatch--no i { box-shadow: 0 0 0 3px #c9a47a; }
@@ -493,7 +504,7 @@
 
   /* ---------- Closing ---------- */
   .closing { display: grid; justify-items: center; gap: 22px; text-align: center; }
-  .closing .arch { width: min(340px, 100%); aspect-ratio: 2 / 3; }
+  .closing .arch { width: 100%; aspect-ratio: 2 / 3; }   /* last-page image fills the column */
   .closing .script { font-size: var(--step-3); }
 
   /* ---------- Curtain gate (opening animation) ---------- */
@@ -707,9 +718,11 @@
   .form-actions { display: flex; justify-content: center; }
   .form-error { text-align: center; color: var(--rose); font-style: italic; }
   .rsvp-done { max-width: 620px; margin: 0 auto; display: grid; gap: 18px; justify-items: center; text-align: center; }
-  .rsvp-done h3 { font-family: var(--font-script); font-weight: 400; font-size: var(--step-3); }
+  /* Readable italic serif rather than the thin script font */
+  .rsvp-done h3 { font-family: var(--font-body); font-style: italic; font-weight: 600; font-size: var(--step-2); line-height: 1.3; color: var(--gold-deep); max-width: 22ch; }
+  .rsvp-pic { display: block; width: min(340px, 100%); height: auto; mix-blend-mode: multiply; }
   .rsvp-reply { max-width: 34ch; line-height: 1.6; font-size: 1.1rem; }
-  .rsvp-reply-end { font-family: var(--font-script); font-size: 1.9rem; line-height: 1.2; color: var(--bronze); }
+  .rsvp-reply-end { font-family: var(--font-body); font-style: italic; font-weight: 600; font-size: var(--step-1); line-height: 1.3; color: var(--bronze); }
   .rsvp-done pre {
     width: 100%; box-sizing: border-box; margin: 0;
     white-space: pre-wrap; text-align: left;
@@ -946,7 +959,7 @@
      background, so no blend or fade is needed and the flowers sit crisply on top of the clouds */
   .card > .corner { width: 132px; mix-blend-mode: normal; -webkit-mask-image: none; mask-image: none; }
   .it-corner--br { transform: scale(-1, -1); }
-  /* Gentle hint on the first page: scroll down to play the quiz (stays until Our Story is in view) */
+  /* Gentle hint on the first page: scroll down to play the quiz (stays until the guest reaches Our Story) */
   .scroll-nudge { position: fixed; z-index: 41; left: 50%; bottom: calc(86px + env(safe-area-inset-bottom, 0px)); translate: -50% 0;
     display: inline-flex; align-items: center; gap: 8px; max-width: calc(100vw - 120px); padding: 9px 16px; border-radius: 999px;
     background: #fffaf0f2; border: 1px solid #d9a94e99; box-shadow: 0 8px 22px -10px #6b422066;
@@ -1305,23 +1318,22 @@
           <div class="wc-photo"><img src="images/wardrobe-sangeet.webp" alt="Couple dancing on a stage under a disco ball" loading="lazy"></div>
           <div class="wc-body">
             <p class="marquee">Now showing</p>
-            <h3 class="wc-title">SPARKLE &amp; STORY</h3>
-            <p class="wc-tag">It’s Sangeet Time!</p>
-            <p class="wc-copy">An evening of music, magic, moves &amp; memories.</p>
+            <h3 class="wc-title">Style &amp; Story</h3>
+            <p class="wc-copy">An evening of music, moves &amp; memories.</p>
+
             <p class="wc-theme">Indo-Western Glam</p>
-            <p class="wc-copy">Think shimmer, sequins &amp; a little drama!</p>
+            <p class="wc-copy">or come as your favourite movie character</p>
             <p class="wc-sub">Leave at home</p>
             <div class="swatches">
               <span class="swatch swatch--no" style="--c:var(--swatch-red)"><i></i>No red</span>
               <span class="swatch swatch--no" style="--c:var(--swatch-black)"><i></i>No black</span>
             </div>
-            <p class="wc-sub">Your starring moment</p>
-            <p class="wc-tag">Pick a Song. Tell a Story.</p>
-            <p class="wc-copy">Let your moves do the talking and your dance tell the tale!</p>
+
+            <p class="wc-copy" style="color: var(--tag)">Pick a song and let your dance moves tell a story.</p>
+
             <p class="wc-sub">Lights. Camera. Action!</p>
-            <p class="wc-copy">Let’s dance our way into unforgettable memories!</p>
             <div class="teams">
-              <button type="button" class="team team--sparkle" data-team="sparkle"><small>Tap for</small>Sparkle<span class="tally"></span></button>
+              <button type="button" class="team team--sparkle" data-team="sparkle"><small>Tap for</small>Style<span class="tally"></span></button>
               <span class="vs">&amp;</span>
               <button type="button" class="team team--story" data-team="story"><small>Tap for</small>Story<span class="tally"></span></button>
             </div>
@@ -1332,22 +1344,28 @@
         <article class="wcard wcard--wedding">
           <div class="wc-photo"><img src="images/wardrobe-wedding.webp" alt="Couple in Rajasthani lehenga and kurta before a palace" loading="lazy"></div>
           <div class="wc-body">
-            <p class="wc-kicker" lang="hi">पधारो सा</p>
             <h3 class="wc-title">A Royal Celebration</h3>
             <p class="wc-theme">Rajasthani theme</p>
-            <p class="wc-copy">With hearts full of joy and homes filled with festivities, we invite you to join us as we celebrate love, laughter and the coming together of two families.</p>
             <p class="wc-copy">Come experience the colours, culture and charm of Rajasthan as we embark on this beautiful new journey.</p>
             <p class="wc-tag" lang="hi">थारी मौजूदगी, म्हारी खुशी!</p>
             <p class="wc-copy">Your presence will make our celebration even more special.</p>
             <p class="wc-tag" lang="hi">पधारो सा, म्हारे आंगणे! ❤️</p>
+
+            <p class="wc-sub">Juta Chupai</p>
+            <p class="wc-copy" style="color: var(--tag)">Who will win the shoe game?</p>
             <div class="teams">
-              <button type="button" class="team team--dhol" data-team="dhol"><small>Tap for</small>Dhol<span class="tally"></span></button>
-              <span class="vs">&amp;</span>
-              <button type="button" class="team team--phool" data-team="phool"><small>Tap for</small>Phool<span class="tally"></span></button>
+              <button type="button" class="team team--jgroom" data-team="jgroom"><small>Team</small>Groom<span class="tally"></span></button>
+              <span class="vs">VS</span>
+              <button type="button" class="team team--jbride" data-team="jbride"><small>Team</small>Bride<span class="tally"></span></button>
             </div>
-            <p class="battle-hint">Tap to shower the palace with petals</p>
+            <p class="battle-hint">Place your bet: tap a side</p>
           </div>
         </article>
+      </div>
+      <div class="wc-dots" id="look-dots" role="group" aria-label="Choose an event">
+        <button type="button" aria-label="Carnival" aria-current="true"></button>
+        <button type="button" aria-label="Sangeet" aria-current="false"></button>
+        <button type="button" aria-label="Wedding" aria-current="false"></button>
       </div>
     </section>
 
@@ -1453,6 +1471,7 @@
       </form>
 
       <div class="rsvp-done" id="rsvp-done" hidden>
+        <img class="rsvp-pic" id="rsvp-pic" src="images/rsvp-yes.webp" alt="" hidden>
         <h3 id="rsvp-thanks">Thank you</h3>
         <p class="rsvp-reply" id="rsvp-reply"></p>
         <p class="rsvp-reply-end" id="rsvp-reply-end"></p>
@@ -1683,13 +1702,13 @@
     });
   })();
 
-  // Carnival battle and Sangeet stage: tap a button for a burst of team-coloured confetti (Sangeet adds sparkles and music notes)
+  // Carnival battle, Sangeet stage and Juta Chupai bet: tap a button for a burst of team-coloured confetti (Sangeet and Wedding add emoji)
   const TEAM = {
     groom: ['#3b86c8', '#2d5c92', '#f2b705', '#ffffff'], bride: ['#a77bd9', '#8c62c4', '#f2b705', '#ffffff'],
     sparkle: ['#f6d58e', '#e8c89a', '#ffffff', '#c99a3c'], story: ['#d9679a', '#8c3f87', '#f6d58e', '#ffffff'],
-    dhol: ['#e8c89a', '#b27a45', '#f1d6ad', '#ffffff'], phool: ['#f59e0b', '#c2410c', '#e11d74', '#f6d58e']
+    jgroom: ['#f1d6ad', '#b27a45', '#e8c89a', '#ffffff'], jbride: ['#e07a98', '#a3324f', '#e8c89a', '#ffffff']
   };
-  const GLYPHS = { sparkle: ['✨', '⭐', '💫'], story: ['🎬', '🎵', '🎶', '🎭'], dhol: ['🥁', '🎺', '👑', '✨'], phool: ['🌸', '🌼', '🪔', '🏵️'] };
+  const GLYPHS = { sparkle: ['✨', '⭐', '💫'], story: ['🎬', '🎵', '🎶', '🎭'], jgroom: ['👞', '🏆', '💪'], jbride: ['👞', '💰', '😉'] };
   document.querySelectorAll('.team').forEach(btn => btn.addEventListener('click', () => {
     const tally = btn.querySelector('.tally');
     if (tally) tally.textContent = '× ' + (btn._n = (btn._n || 0) + 1);
@@ -1743,15 +1762,16 @@
   }
 
   // Scroll hint: shows about 3 s after opening and stays while the guest is on the first page;
-  // hidden once Our Story comes into view, back again if they scroll up to the top
+  // hidden once the guest has scrolled down to Our Story, back again if they scroll up
   (() => {
     const nudge = $('scroll-nudge'), story = $('story');
     let ready = false, past = false;
     const sync = () => { nudge.classList.toggle('on', ready && !past); };
-    if ('IntersectionObserver' in window) {
-      new IntersectionObserver(es => es.forEach(e => { past = e.isIntersecting || e.boundingClientRect.top < 0; sync(); })).observe(story);
-    }
-    const show = () => setTimeout(() => { nudge.hidden = false; requestAnimationFrame(() => { ready = true; sync(); }); }, 3000);
+    // hide only once the guest has arrived at Our Story (its top is in the upper third of the screen)
+    const check = () => { past = story.getBoundingClientRect().top < innerHeight * 0.33; sync(); };
+    addEventListener('scroll', check, { passive: true });
+    addEventListener('resize', check);
+    const show = () => setTimeout(() => { nudge.hidden = false; requestAnimationFrame(() => { ready = true; check(); }); }, 3000);
     if (document.querySelector('.stage') || reduce) show();
     else new MutationObserver((m, o) => { if (document.querySelector('.stage')) { o.disconnect(); show(); } }).observe(document.body, { subtree: true, attributes: true, attributeFilter: ['class'] });
   })();
@@ -1799,15 +1819,16 @@
   // ---- Wardrobe carousel dots (phones) ----
   const looks = $('looks');
   const dots = [...document.querySelectorAll('#look-dots button')];
-  const lookEls = [...looks.querySelectorAll('.look')];
-  dots.forEach((d, i) => d.addEventListener('click', () => looks.scrollTo({ left: lookEls[i].offsetLeft - looks.offsetLeft - 22, behavior: reduce ? 'auto' : 'smooth' })));
+  const lookEls = [...looks.querySelectorAll('.wcard')];
+  const centreOf = el => el.offsetLeft - looks.offsetLeft + el.offsetWidth / 2;
+  dots.forEach((d, i) => d.addEventListener('click', () => looks.scrollTo({ left: centreOf(lookEls[i]) - looks.clientWidth / 2, behavior: reduce ? 'auto' : 'smooth' })));
   let raf = 0;
   looks.addEventListener('scroll', () => {
     cancelAnimationFrame(raf);
     raf = requestAnimationFrame(() => {
       const mid = looks.scrollLeft + looks.clientWidth / 2;
       let best = 0, bestD = Infinity;
-      lookEls.forEach((el, i) => { const c = el.offsetLeft - looks.offsetLeft + el.offsetWidth / 2, dd = Math.abs(c - mid); if (dd < bestD) { bestD = dd; best = i; } });
+      lookEls.forEach((el, i) => { const c = centreOf(el), dd = Math.abs(c - mid); if (dd < bestD) { bestD = dd; best = i; } });
       dots.forEach((d, i) => d.setAttribute('aria-current', String(i === best)));
     });
   }, { passive: true });
@@ -1862,24 +1883,23 @@
   }
   function showDone(r) {
     const reply = {
-      yes: ['Yay! We’re so happy you’ll be celebrating with us! ❤️',
-        'Your presence will make our special day even more memorable. We can’t wait to celebrate, laugh, and make beautiful memories together!',
-        'See you at the wedding! 🥂'],
-      no: ['We’ll miss having you with us!',
-        'Thank you for letting us know. While we’re sad you won’t be able to join us, we’ll be thinking of you and sending lots of love your way.',
-        'You’ll be missed! ❤️'],
-      maybe: ['We’d love to have you there!',
-        'We understand you might need a little more time to confirm. Do let us know as soon as you can so we can plan accordingly.',
-        'Keeping our fingers crossed! 🤞']
+      yes: ['Yay! We’re so happy you’ll be celebrating with us! ❤️', '', 'See you at the wedding! 🥂'],
+      no: ['We’ll miss having you with us!', '', ''],
+      maybe: ['We’d love to have you there!', '', 'Keeping our fingers crossed! 🤞']
     }[r.attending] || ['Thank you', '', ''];
+    const pic = { yes: 'images/rsvp-yes.webp', maybe: 'images/rsvp-maybe.webp', no: 'images/rsvp-no.webp' }[r.attending];
+    if (pic) $('rsvp-pic').src = pic;
+    $('rsvp-pic').hidden = !pic;
     $('rsvp-thanks').textContent = reply[0];
     $('rsvp-reply').textContent = reply[1];
+    $('rsvp-reply').hidden = !reply[1];
     $('rsvp-reply-end').textContent = reply[2];
+    $('rsvp-reply-end').hidden = !reply[2];
     if (RSVP_SHEET_URL) $('rsvp-sheet').href = RSVP_SHEET_URL + '?' + sheetParams(r);
     setStatus(r);
     form.hidden = true;
+    $('rsvp-intro').hidden = true;   // after submitting, only the reply is shown
     $('rsvp-done').hidden = false;
-    $('rsvp-intro').hidden = true;
   }
   // Direct save works on a self-hosted copy; inside claude.ai it is blocked, so the guest confirms via the link.
   async function sendToSheet(r) {
@@ -1918,7 +1938,7 @@
     showDone(r);
     if (RSVP_SHEET_URL) sendToSheet(r);
   });
-  $('rsvp-edit').addEventListener('click', () => { $('rsvp-done').hidden = true; $('rsvp-intro').hidden = false; form.hidden = false; });
+  $('rsvp-edit').addEventListener('click', () => { $('rsvp-done').hidden = true; form.hidden = false; $('rsvp-intro').hidden = false; });
   const saved = local.get();
   if (saved && saved.name) {
     $('rsvp-name').value = saved.name;

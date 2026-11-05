@@ -153,16 +153,26 @@ a { color: var(--bronze); text-underline-offset: 3px; }
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
 }
 
-/* Blessing: the charming highlight line under the couple photo */
+/* Blessing: the classic gold highlight line under the couple photo */
 .blessing {
-  display: grid; justify-items: center; gap: 2px; margin: 4px 0;
-  font-family: var(--font-script); font-weight: 400; color: var(--bronze);
-  font-size: clamp(1.9rem, 1.4rem + calc(2.4 * var(--vw)), 3rem); line-height: 1.2; text-align: center;
-  text-shadow: 0 0 14px #fff3d1, 0 0 30px #d9a94e55;
+  display: grid; justify-items: center; gap: 0; margin: 4px 0;
+  font-family: var(--font-body, "Cormorant Garamond", serif); font-style: italic; font-weight: 600;
+  font-size: clamp(1.15rem, 1rem + calc(1.1 * var(--vw)), 1.6rem); line-height: 1.35; letter-spacing: .02em; text-align: center;
+  color: #b8862f;
+  background: linear-gradient(180deg, #e9c46a 0%, #b8862f 55%, #8a5f1f 100%); -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 .blessing::before, .blessing::after {
-  content: "✦"; font-family: Georgia, serif; font-size: .38em; color: var(--gold); text-shadow: none; letter-spacing: 0;
+  content: "✦"; font-family: Georgia, serif; font-style: normal; font-size: .6em; color: var(--gold); -webkit-text-fill-color: var(--gold); letter-spacing: 0;
 }
 .blessing::before { margin-bottom: 4px; }
 .blessing::after { margin-top: 4px; }
-html[lang="hi"] .blessing { font-family: var(--font-deva); line-height: 1.5; font-size: clamp(1.4rem, 1.1rem + calc(1.6 * var(--vw)), 2.1rem); letter-spacing: 0; }
+/* Devanagari: solid gold (gradient-clipped text cuts off vowel signs) */
+html[lang="hi"] .blessing { font-family: var(--font-deva); font-style: normal; font-weight: 400; line-height: 1.6; letter-spacing: 0;
+  font-size: clamp(1.1rem, 1rem + calc(0.9 * var(--vw)), 1.5rem); background: none; -webkit-text-fill-color: #a87722; color: #a87722; }
+
+/* Shubh Vivah headline above the names */
+.shubh { display: grid; justify-items: center; gap: 4px; margin: 6px 0 -4px; text-align: center; }
+.shubh .deva { font-size: clamp(1.5rem, 1.2rem + calc(1.6 * var(--vw)), 2.1rem); line-height: 1.5; color: var(--bronze); }
+.shubh span:last-child { font-family: var(--font-display); font-size: .7rem; letter-spacing: .24em; text-transform: uppercase; color: var(--bronze-deep); opacity: .85; text-wrap: balance; }
+html[lang="hi"] .shubh span:last-child { font-family: var(--font-deva); letter-spacing: 0; text-transform: none; font-size: 1rem; }

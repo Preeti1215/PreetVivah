@@ -22,7 +22,8 @@
     content: "";
     position: absolute;
     inset: 14px;
-    border: 1px solid var(--bronze-soft);
+    border: 1px solid var(--gold);   /* finer double-line gold border */
+    box-shadow: inset 0 0 0 4px var(--paper), inset 0 0 0 5px var(--bronze-soft);
     pointer-events: none;
     z-index: 2;
   }
@@ -170,8 +171,8 @@
       radial-gradient(ellipse 11px 6px at 50% 82%, #c9772e 0 70%, transparent 72%);
     filter: drop-shadow(0 0 8px #ffbf5acc) drop-shadow(0 0 18px #ffb34a66);
   }
-  .floaters .heart { width: 14px; height: 14px; color: #d98a96; }
-  .floaters .heart::before { content: "\2665"; font: 14px/1 Georgia, serif; }
+  .floaters .heart { width: 12px; height: 12px; color: var(--gold); }   /* gold sparkles (class name kept) */
+  .floaters .heart::before { content: "\2726"; font: 12px/1 Georgia, serif; text-shadow: 0 0 8px #f6d58eaa; }
   .floaters .marigold { width: 16px; height: 16px; border-radius: 50%; background: radial-gradient(circle, #ffd25e 0 30%, #f39a1e 31% 62%, #e07b12 63% 100%); box-shadow: 0 0 0 2px #f6b23a55; }
   @keyframes float-up {
     0% { opacity: 0; transform: translate(0, 0) rotate(0); }
@@ -439,6 +440,7 @@
   /* Same script font as the Carnival title, kept on one line */
   .wcard--sangeet .wc-title { white-space: nowrap; font-size: clamp(2.4rem, 2rem + calc(2 * var(--vw)), 3.3rem); }
   .wcard--sangeet .wc-theme { color: #f1e4d3; }
+  .wcard--sangeet .wc-glam { white-space: nowrap; max-width: none; font-size: clamp(.78rem, 3.6vw, 1rem); }   /* one line */
   .wcard--sangeet .swatch { color: #f1e4d3; }
   .wcard--sangeet .swatch--no i { box-shadow: 0 0 0 3px #c9a47a; }
   .wcard--sangeet .story { background: #ffffff10; border-color: #ffffff30; }
@@ -531,7 +533,7 @@
   .art::after { animation: drift 16s ease-in-out infinite alternate; }
   @keyframes drift { from { transform: scale(1); } to { transform: scale(1.045); } }
   /* One artwork spread across both doors, so it splits down the middle as they open */
-  .art { position: absolute; top: 0; bottom: 0; width: 200%; }
+  .art { position: absolute; top: 0; bottom: 0; width: 200%; opacity: .9; }   /* softer curtain */
   .panel--l .art { left: 0; }
   .panel--r .art { right: 0; }
   .art::before, .art::after { content: ""; position: absolute; inset: 0; background: url(images/gate.webp) 50% 50% / cover no-repeat; }
@@ -968,7 +970,7 @@
   /* Gentle hint on the first page: scroll down to play the quiz (stays until the guest reaches Our Story) */
   .scroll-nudge { position: fixed; z-index: 41; left: 50%; bottom: calc(86px + env(safe-area-inset-bottom, 0px)); translate: -50% 0;
     display: inline-flex; align-items: center; gap: 8px; max-width: calc(100vw - 120px); padding: 9px 16px; border-radius: 999px;
-    background: #fffaf0f2; border: 1px solid #d9a94e99; box-shadow: 0 8px 22px -10px #6b422066;
+    background: linear-gradient(180deg, #fff8e4, #ecd5a0); border: 1px solid var(--gold); box-shadow: 0 8px 22px -10px #6b422066, 0 1px 0 #fff inset;
     font-family: var(--font-display); font-size: .68rem; letter-spacing: .12em; text-transform: uppercase; line-height: 1.3; text-align: center;
     color: var(--bronze-deep); text-decoration: none; opacity: 0; transition: opacity .6s ease, translate .6s ease; pointer-events: none; }
   .scroll-nudge.on { opacity: 1; pointer-events: auto; }
@@ -1135,7 +1137,7 @@
   </button>
 </div>
 <canvas id="petals" aria-hidden="true"></canvas>
-<a class="scroll-nudge" id="scroll-nudge" href="#story" hidden><span>Scroll down to play the quiz</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></a>
+<a class="scroll-nudge" id="scroll-nudge" href="#story" hidden><span>Your invitation comes with a little surprise! Scroll to discover</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></a>
 <button class="music" id="music-btn" type="button" aria-pressed="false"><span class="eq" aria-hidden="true"><i></i><i></i><i></i></span><span id="music-label">Play music</span></button>
 <a class="lang-toggle" id="lang-toggle" href="hi.html" lang="hi" hreflang="hi">हिन्दी</a>
 
@@ -1182,6 +1184,8 @@
 
         <p class="dear script rise" id="dear" style="--d:1350" hidden></p>
         <p class="invite-line"><span class="ph" style="--t:850"><span class="invite-script">Every love story needs its people,</span><span class="invite-script">and you’re ours.</span><img class="it-hearts invite-hearts" src="images/ic-hearts.webp" alt=""></span><span class="ph" style="--t:1000">Can’t wait to celebrate our special day with you</span></p>
+
+        <p class="shubh rise" style="--d:1400"><span class="deva" lang="hi">शुभ विवाह</span><span>A celebration of love &amp; togetherness</span></p>
 
         <h1 class="names">
           <span class="name" data-split style="--base:0">Preeti</span>
@@ -1341,10 +1345,10 @@
             <p class="marquee">Now showing</p>
             <h3 class="wc-title">Sparkle &amp; Stories</h3>
             <p class="wc-theme wc-night">The Sangeet Night</p>
-            <p class="wc-copy">Every Move Has a Story, Shimmer • Sequins • Metallics • All things fabulous.</p>
+            <p class="wc-copy">Every Move Has a Story</p>
 
             <p class="wc-theme">Indo-Western Glam</p>
-            <p class="wc-copy">or come as your favourite movie character</p>
+            <p class="wc-copy wc-glam">Shimmer • Sequins • Metallics • Fabulous</p>
             <p class="wc-sub">Leave at home</p>
             <div class="swatches">
               <span class="swatch swatch--no" style="--c:var(--swatch-red)"><i></i>No red</span>

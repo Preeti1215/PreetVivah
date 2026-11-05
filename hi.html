@@ -43,7 +43,8 @@
     content: "";
     position: absolute;
     inset: 14px;
-    border: 1px solid var(--bronze-soft);
+    border: 1px solid var(--gold);   /* finer double-line gold border */
+    box-shadow: inset 0 0 0 4px var(--paper), inset 0 0 0 5px var(--bronze-soft);
     pointer-events: none;
     z-index: 2;
   }
@@ -191,8 +192,8 @@
       radial-gradient(ellipse 11px 6px at 50% 82%, #c9772e 0 70%, transparent 72%);
     filter: drop-shadow(0 0 8px #ffbf5acc) drop-shadow(0 0 18px #ffb34a66);
   }
-  .floaters .heart { width: 14px; height: 14px; color: #d98a96; }
-  .floaters .heart::before { content: "\2665"; font: 14px/1 Georgia, serif; }
+  .floaters .heart { width: 12px; height: 12px; color: var(--gold); }   /* gold sparkles (class name kept) */
+  .floaters .heart::before { content: "\2726"; font: 12px/1 Georgia, serif; text-shadow: 0 0 8px #f6d58eaa; }
   .floaters .marigold { width: 16px; height: 16px; border-radius: 50%; background: radial-gradient(circle, #ffd25e 0 30%, #f39a1e 31% 62%, #e07b12 63% 100%); box-shadow: 0 0 0 2px #f6b23a55; }
   @keyframes float-up {
     0% { opacity: 0; transform: translate(0, 0) rotate(0); }
@@ -456,6 +457,7 @@
     background: #3a2140; border: 4px dotted #f6d58e; box-shadow: 0 0 14px #f6d58e66, inset 0 0 10px #f6d58e33; animation: bulbs 1.6s steps(2) infinite; }
   @keyframes bulbs { 50% { border-color: #fff1c9; box-shadow: 0 0 20px #f6d58e99, inset 0 0 12px #f6d58e44; } }
   .wcard--sangeet .wc-title { text-shadow: 0 0 12px #ffe7b3cc, 0 0 30px #f6d58e66; }
+  .wcard--sangeet .wc-glam { white-space: nowrap; max-width: none; font-size: clamp(.8rem, 3.8vw, 1.05rem); }   /* one line */
   .wcard--sangeet .wc-theme { color: #f1e4d3; font-size: 1.35rem; line-height: 1.4; }   /* इंडो-वेस्टर्न ग्लैम, larger */
   .wcard--sangeet .swatch { color: #f1e4d3; }
   .wcard--sangeet .swatch--no i { box-shadow: 0 0 0 3px #c9a47a; }
@@ -548,7 +550,7 @@
   .art::after { animation: drift 16s ease-in-out infinite alternate; }
   @keyframes drift { from { transform: scale(1); } to { transform: scale(1.045); } }
   /* One artwork spread across both doors, so it splits down the middle as they open */
-  .art { position: absolute; top: 0; bottom: 0; width: 200%; }
+  .art { position: absolute; top: 0; bottom: 0; width: 200%; opacity: .9; }   /* softer curtain */
   .panel--l .art { left: 0; }
   .panel--r .art { right: 0; }
   .art::before, .art::after { content: ""; position: absolute; inset: 0; background: url(images/gate.webp) 50% 50% / cover no-repeat; }
@@ -978,7 +980,7 @@
   /* Gentle hint on the first page: scroll down to play the quiz (stays until the guest reaches Our Story) */
   .scroll-nudge { position: fixed; z-index: 41; left: 50%; bottom: calc(86px + env(safe-area-inset-bottom, 0px)); translate: -50% 0;
     display: inline-flex; align-items: center; gap: 8px; max-width: calc(100vw - 120px); padding: 9px 16px; border-radius: 999px;
-    background: #fffaf0f2; border: 1px solid #d9a94e99; box-shadow: 0 8px 22px -10px #6b422066;
+    background: linear-gradient(180deg, #fff8e4, #ecd5a0); border: 1px solid var(--gold); box-shadow: 0 8px 22px -10px #6b422066, 0 1px 0 #fff inset;
     font-family: var(--font-display); font-size: .68rem; letter-spacing: .12em; text-transform: uppercase; line-height: 1.3; text-align: center;
     color: var(--bronze-deep); text-decoration: none; opacity: 0; transition: opacity .6s ease, translate .6s ease; pointer-events: none; }
   .scroll-nudge.on { opacity: 1; pointer-events: auto; }
@@ -1144,7 +1146,7 @@
   </button>
 </div>
 <canvas id="petals" aria-hidden="true"></canvas>
-<a class="scroll-nudge" id="scroll-nudge" href="#story" hidden><span>क्विज़ खेलने के लिए नीचे स्क्रॉल करें</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></a>
+<a class="scroll-nudge" id="scroll-nudge" href="#story" hidden><span>आपके निमंत्रण में एक छोटा-सा सरप्राइज़ है! देखने के लिए स्क्रॉल करें</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></a>
 <button class="music" id="music-btn" type="button" aria-pressed="false"><span class="eq" aria-hidden="true"><i></i><i></i><i></i></span><span id="music-label">संगीत चलाएँ</span></button>
 <a class="lang-toggle" id="lang-toggle" href="./" lang="en" hreflang="en">English</a>
 
@@ -1194,6 +1196,8 @@
         <p class="shloka deva rise" style="--d:1400">॥ श्री महावीराय नमः ॥<br>मंगलम भगवान् वीरो, मंगलम गौतमः प्रभूः।<br>मंगलम स्थूलभद्राद्या, जैन धर्मोऽस्तु मंगलम् ॥</p>
         <p class="sadar rise" style="--d:1450">॥ सादर जय जिनेन्द्र ॥</p>
         <p class="invite-line rise" style="--d:1500">आँखों में सपने नए, हाथों में मेहंदी का प्यार,<br>बाबुल के आँगन से चली, सजाकर खुशियों का संसार।<br>प्रभु की असीम कृपा से हमारी लाडली बिटिया</p>
+
+        <p class="shubh rise" style="--d:1400"><span class="deva" lang="hi">शुभ विवाह</span><span>प्रेम और अपनत्व का उत्सव</span></p>
 
         <h1 class="names">
           <span class="chi rise" style="--d:50">चि. सौ. कां.</span>
@@ -1359,10 +1363,10 @@
             <p class="marquee">अब प्रदर्शित</p>
             <h3 class="wc-title">स्पार्कल और स्टोरीज़</h3>
             <p class="wc-theme wc-night">संगीत की रात</p>
-            <p class="wc-copy">हर अदा की एक कहानी है — झिलमिल • सितारे • मेटैलिक्स • सब कुछ शानदार।</p>
+            <p class="wc-copy">हर अदा की एक कहानी है</p>
 
             <p class="wc-theme">इंडो-वेस्टर्न ग्लैम</p>
-            <p class="wc-copy">या अपने पसंदीदा फ़िल्मी किरदार बनकर आइए</p>
+            <p class="wc-copy wc-glam">झिलमिल • सितारे • मेटैलिक्स • शानदार</p>
             <p class="wc-sub">इन रंगों से परहेज़ करें</p>
             <div class="swatches">
               <span class="swatch swatch--no" style="--c:var(--swatch-red)"><i></i>लाल नहीं</span>

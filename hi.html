@@ -413,7 +413,16 @@
   .dress dd { margin: 0; text-align: left; }
 
   /* ---------- Wardrobe: themed invitation cards ---------- */
-  .wcards { display: grid; gap: clamp(36px, calc(6 * var(--vw)), 56px); max-width: 480px; margin: 0 auto; }
+  /* Side-to-side slider: one card per swipe, snapping into place */
+  .wcards { display: grid; grid-auto-flow: column; grid-auto-columns: min(86%, 420px); gap: 18px; align-items: start;
+    overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: none;
+    margin: 0 -22px; padding: 12px 22px 40px; scroll-padding-inline: 22px; }
+  .wcards::-webkit-scrollbar { display: none; }
+  .wcards > .wcard { scroll-snap-align: center; }
+  .wc-dots { display: flex; justify-content: center; gap: 10px; margin-top: -18px; }
+  .wc-dots button { width: 10px; height: 10px; padding: 0; border-radius: 50%; border: 1px solid var(--bronze); background: transparent; cursor: pointer; transition: background .3s, transform .3s; }
+  .wc-dots button[aria-current="true"] { background: var(--bronze); transform: scale(1.25); }
+  .wc-dots button:focus-visible { outline: 2px solid var(--cornflower); outline-offset: 3px; }
   .wcard { --bd: #e9c86a; --ink: #3a2a1a; --accent: #6b3fa0; --tag: #2f7d4f;
     position: relative; padding: 10px 10px 30px; border-radius: 999px 999px 26px 26px; border: 2px solid var(--bd);
     box-shadow: 0 0 0 5px #fffdf8, 0 0 0 6px var(--bd), 0 30px 60px -36px #3a1a0a88; overflow: hidden; color: var(--ink); }
@@ -986,6 +995,14 @@
   #itinerary .script-title { font-family: var(--font-display); font-weight: 500; letter-spacing: .08em; color: #8a5a2b; background: none; -webkit-text-fill-color: currentColor; }
   .it-hearts { width: 58px; }
   .it { max-width: 400px; margin: 0 auto; display: grid; gap: 18px; }
+  /* Side-to-side days: swipe from Dec 20 to Dec 21, the next day peeking in at the edge */
+  .it-days { display: grid; grid-auto-flow: column; grid-auto-columns: 90%; gap: 14px; align-items: start;
+    overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: none; padding: 4px 2px 10px; }
+  .it-days::-webkit-scrollbar { display: none; }
+  .it-slide { scroll-snap-align: center; display: grid; gap: 18px; align-content: start; padding: 18px 8px 20px;
+    border-radius: 22px; background: #fffdf8b3; border: 1px solid #d9b98a80; box-shadow: 0 14px 30px -22px #6b422066; }
+  #it-dots { margin-top: 0; }
+  .it-hint { text-align: center; font-style: italic; font-size: .85rem; color: #7b5a3e; margin-top: -8px; }
   .it-day { display: flex; align-items: center; justify-content: center; gap: 4px; }
   .sprig { width: 50px; filter: saturate(.32) brightness(.82) contrast(1.05); }   /* grey leaves with a slight green tint, like the leaves around the corner flowers */
   .sprig--r { transform: scaleX(-1); }
@@ -1002,10 +1019,6 @@
   .it-what h3 { font-family: var(--font-body); font-weight: 500; font-size: 1.12rem; line-height: 1.15; color: #4a2f19; }
   .it-venue { display: block; margin-top: 2px; font-family: var(--font-display); font-size: .62rem; letter-spacing: .2em; text-transform: uppercase; color: #7b5a3e; }
   .it-note { display: block; font-style: italic; font-size: .8rem; color: #7b5a3e; }
-  .it-break { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 4px 0; }
-  .it-break::before, .it-break::after { content: ""; flex: 1; max-width: 70px; height: 1px; background: #a9784a; }
-  .it-break .sprig { width: 40px; }
-  .it-break .it-hearts { width: 46px; }
 
   /* Our story: a swipeable row of polaroids */
   #story { background: var(--hearts) 0 0 / 260px 320px repeat, url("images/sky.webp") center top / 100% auto repeat-y; padding-inline: 0; }
@@ -1274,6 +1287,8 @@
       </div>
 
       <div class="it reveal">
+        <div class="it-days" id="it-days">
+        <div class="it-slide">
         <div class="it-day"><img class="sprig" src="images/ic-sprig.webp" alt=""><span class="plaque">20 दिसंबर</span><img class="sprig sprig--r" src="images/ic-sprig.webp" alt=""></div>
         <ol class="it-list">
           <li><time>10:00 – 13:00</time><i class="it-node" aria-hidden="true"></i><div class="it-what"><img src="images/ic-suitcase.webp" alt=""><div><h3>आगमन</h3></div></div></li>
@@ -1282,7 +1297,9 @@
           <li><time>18:30 – 22:00</time><i class="it-node" aria-hidden="true"></i><div class="it-what"><img src="images/ic-notes.webp" alt=""><div><h3>संगीत एवं रात्रि भोजन</h3><span class="it-venue">लॉन</span><span class="it-note">सूर्यास्त पूर्व रात्रि भोजन 17:30</span></div></div></li>
         </ol>
 
-        <div class="it-break" aria-hidden="true"><img class="sprig" src="images/ic-sprig.webp" alt=""><img class="it-hearts" src="images/ic-hearts.webp" alt=""><img class="sprig sprig--r" src="images/ic-sprig.webp" alt=""></div>
+        </div>
+
+        <div class="it-slide">
 
         <div class="it-day"><img class="sprig" src="images/ic-sprig.webp" alt=""><span class="plaque">21 दिसंबर</span><img class="sprig sprig--r" src="images/ic-sprig.webp" alt=""></div>
         <ol class="it-list">
@@ -1292,6 +1309,13 @@
           <li><time>12:00 – 14:00</time><i class="it-node" aria-hidden="true"></i><div class="it-what"><img src="images/ic-sweets.webp" alt=""><div><h3>भोजन</h3><span class="it-venue">डोम</span></div></div></li>
           <li><time>15:30 – 17:00</time><i class="it-node" aria-hidden="true"></i><div class="it-what"><img src="images/ic-it-hitea.webp" alt=""><div><h3>हाई-टी</h3><span class="it-venue">डोम</span></div></div></li>
         </ol>
+        </div>
+        </div>
+        <div class="wc-dots" id="it-dots" role="group" aria-label="दिन चुनें">
+          <button type="button" aria-label="20 दिसंबर" aria-current="true"></button>
+          <button type="button" aria-label="21 दिसंबर" aria-current="false"></button>
+        </div>
+        <p class="it-hint">अगले दिन के लिए स्वाइप करें</p>
       </div>
     </section>
 
@@ -1364,6 +1388,11 @@
             <p class="battle-hint">महल पर फूल बरसाने के लिए टैप करें</p>
           </div>
         </article>
+      </div>
+      <div class="wc-dots" id="look-dots" role="group" aria-label="कार्यक्रम चुनें">
+        <button type="button" aria-label="कार्निवल" aria-current="true"></button>
+        <button type="button" aria-label="संगीत" aria-current="false"></button>
+        <button type="button" aria-label="विवाह" aria-current="false"></button>
       </div>
     </section>
 
@@ -1839,21 +1868,25 @@
   tick(); setInterval(tick, 1000);
 
 
-  // ---- Wardrobe carousel dots (phones) ----
-  const looks = $('looks');
-  const dots = [...document.querySelectorAll('#look-dots button')];
-  const lookEls = [...looks.querySelectorAll('.look')];
-  dots.forEach((d, i) => d.addEventListener('click', () => looks.scrollTo({ left: lookEls[i].offsetLeft - looks.offsetLeft - 22, behavior: reduce ? 'auto' : 'smooth' })));
-  let raf = 0;
-  looks.addEventListener('scroll', () => {
-    cancelAnimationFrame(raf);
-    raf = requestAnimationFrame(() => {
-      const mid = looks.scrollLeft + looks.clientWidth / 2;
-      let best = 0, bestD = Infinity;
-      lookEls.forEach((el, i) => { const c = el.offsetLeft - looks.offsetLeft + el.offsetWidth / 2, dd = Math.abs(c - mid); if (dd < bestD) { bestD = dd; best = i; } });
-      dots.forEach((d, i) => d.setAttribute('aria-current', String(i === best)));
-    });
-  }, { passive: true });
+  // ---- Side-to-side sliders (wardrobe cards, itinerary days): dots follow the swipe and jump to a slide ----
+  function slider(track, dotsSel, itemSel) {
+    const dots = [...document.querySelectorAll(dotsSel + ' button')];
+    const items = [...track.querySelectorAll(itemSel)];
+    const centreOf = el => el.getBoundingClientRect().left - track.getBoundingClientRect().left + track.scrollLeft + el.offsetWidth / 2;
+    dots.forEach((d, i) => d.addEventListener('click', () => track.scrollTo({ left: centreOf(items[i]) - track.clientWidth / 2, behavior: reduce ? 'auto' : 'smooth' })));
+    let raf = 0;
+    track.addEventListener('scroll', () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        const mid = track.scrollLeft + track.clientWidth / 2;
+        let best = 0, bestD = Infinity;
+        items.forEach((el, i) => { const dd = Math.abs(centreOf(el) - mid); if (dd < bestD) { bestD = dd; best = i; } });
+        dots.forEach((d, i) => d.setAttribute('aria-current', String(i === best)));
+      });
+    }, { passive: true });
+  }
+  slider($('looks'), '#look-dots', '.wcard');
+  slider($('it-days'), '#it-dots', '.it-slide');
 
   // ---- RSVP: composes a reply the guest sends on WhatsApp ----
   const form = $('rsvp-form');

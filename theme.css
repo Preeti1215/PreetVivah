@@ -166,3 +166,9 @@ a { color: var(--bronze); text-underline-offset: 3px; }
 .blessing::before { margin-bottom: 4px; }
 .blessing::after { margin-top: 4px; }
 html[lang="hi"] .blessing { font-family: var(--font-deva); line-height: 1.5; font-size: clamp(1.4rem, 1.1rem + calc(1.6 * var(--vw)), 2.1rem); letter-spacing: 0; }
+
+/* Shubh Vivah headline above the names */
+.shubh { display: grid; justify-items: center; gap: 4px; margin: 6px 0 -4px; text-align: center; }
+.shubh .deva { font-size: clamp(1.5rem, 1.2rem + calc(1.6 * var(--vw)), 2.1rem); line-height: 1.5; color: var(--bronze); }
+.shubh span:last-child { font-family: var(--font-display); font-size: .7rem; letter-spacing: .24em; text-transform: uppercase; color: var(--bronze-deep); opacity: .85; text-wrap: balance; }
+html[lang="hi"] .shubh span:last-child { font-family: var(--font-deva); letter-spacing: 0; text-transform: none; font-size: 1rem; }

@@ -384,7 +384,7 @@
   .cheer-stat[hidden] { display: none; }
   .cheer-bar { display: block; width: 100%; height: 7px; border-radius: 999px; box-shadow: 0 0 0 1px #ffffff80;
     background: linear-gradient(90deg, var(--ca) var(--a), var(--cb) var(--a)); transition: background .4s; }
-  .cheer-stat small { font-size: .75rem; opacity: .75; }
+  .team .tally { font-size: .8rem; font-weight: 600; letter-spacing: .04em; opacity: 1; }   /* shows each side's share, e.g. 58% */
   .battle-copy { max-width: 34ch; line-height: 1.5; }
   .battle-copy em, .wcard--haldi .wc-copy em { color: #c2410c; font-weight: 600; font-style: normal; }
   .battle-hint { font-size: .85rem; font-style: italic; opacity: .75; }
@@ -1789,8 +1789,6 @@
   };
   const GLYPHS = { sparkle: ['✨', '⭐', '💫'], story: ['🎬', '🎵', '🎶', '🎭'], jgroom: ['👞', '🏆', '💪'], jbride: ['👞', '💰', '😉'] };
   document.querySelectorAll('.team').forEach(btn => btn.addEventListener('click', () => {
-    const tally = btn.querySelector('.tally');
-    if (tally) tally.textContent = '× ' + (btn._n = (btn._n || 0) + 1);
     if (reduce) return;
     btn.classList.remove('hit'); void btn.offsetWidth; btn.classList.add('hit');
     const team = btn.dataset.team, glyphs = GLYPHS[team];
@@ -1820,10 +1818,12 @@
     const show = () => rows.forEach(t => {
       const [a, b] = t.querySelectorAll('.team'), p = t.nextElementSibling, key = a.dataset.team;
       const na = counts ? counts[a.dataset.team] || 0 : 0, nb = counts ? counts[b.dataset.team] || 0 : 0, n = na + nb;
-      if (!picks[key] || !n) { p.hidden = true; return; }
+      if (!picks[key] || !n) { p.hidden = true; a.querySelector('.tally').textContent = b.querySelector('.tally').textContent = ''; return; }
       const pa = Math.round(na * 100 / n);
+      a.querySelector('.tally').textContent = pa + '%';          // the share of guests on each side, on the buttons themselves
+      b.querySelector('.tally').textContent = (100 - pa) + '%';
       p.style.cssText = `--a:${pa}%;--ca:${TEAM[a.dataset.team][0]};--cb:${TEAM[b.dataset.team][0]}`;
-      p.innerHTML = `<span class="cheer-bar"></span><span>${name(a)} ${pa}% · ${100 - pa}% ${name(b)}</span><small>${HI ? n + ' मेहमानों ने चुना' : n + (n === 1 ? ' guest has' : ' guests have') + ' picked a side'}</small>`;
+      p.innerHTML = `<span class="cheer-bar"></span><span>${name(a)} ${pa}% · ${100 - pa}% ${name(b)}</span>`;
       p.hidden = false;
     });
     const load = () => {

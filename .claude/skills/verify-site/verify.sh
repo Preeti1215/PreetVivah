@@ -3,7 +3,7 @@
 # Usage: verify.sh [timeout_seconds]   (run from the repo root; live check, run after pushing)
 #        verify.sh --local             (run after every change, BEFORE committing: checks the working tree only)
 set -u
-BASE="https://preeti1215.github.io/PreetVivah/"
+BASE="https://preetivivek2026.github.io/PreetVivah/"
 PAGES="index.html hi.html"   # English (served at the root) and Hindi
 fail=0
 

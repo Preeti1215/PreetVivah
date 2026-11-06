@@ -29,7 +29,7 @@ Also: `#petals` canvas animation and the `#music-btn` toggle (plays `MUSIC_SRC`,
 **Rule: whenever a change is requested, first confirm whether it applies to the English version (`index.html`), the Hindi version (`hi.html`) or both, before editing.** Do not assume. Applying a change to one page only is fine when asked. A Hindi change must follow the reference card `Wedding_Invitation_Updated_Page2.pdf` (the user's own Downloads copy).
 
 - English is served at the root, Hindi at `hi.html`. Each page has a toggle button (top right) that keeps the current section or guest link.
-- `?lang=hi` on the English page redirects to Hindi; `?lang=en` on the Hindi page redirects to English. Shared links look like `https://preeti1215.github.io/PreetVivah/hi.html#guestName=Piya-and-Family&max=4`.
+- `?lang=hi` on the English page redirects to Hindi; `?lang=en` on the Hindi page redirects to English. Shared links look like `https://preetivivek2026.github.io/PreetVivah/hi.html#guestName=Piya-and-Family&max=4`.
 - The `#host` link maker has a language dropdown that builds the matching link. Guest names can be typed in Devanagari.
 - `hi.html` differs from `index.html` beyond text: Devanagari fonts and CSS overrides (no letter-spacing, no gradient-clipped text, which cut off vowel signs), names are not split letter by letter, a Hindi-only "परिवारजन" section (families list from the printed card), Hindi quiz/RSVP strings and a Hindi WhatsApp message. Option `value`s (Train, 20 Dec, 10 AM, yes/maybe/no) stay English so the Google Sheet gets consistent data.
 - Both pages share the same script settings and RSVP logic, so a logic change usually needs doing twice.
@@ -56,7 +56,7 @@ Single light theme taken from the printed card: sky watercolour background, ivor
 ## Working on it
 
 - Preview: open `index.html` directly, or run `python3 -m http.server` in the repo root (better for audio and fetch).
-- Deploy: commit and push to `main`; GitHub Pages refreshes in a minute or two. Live at https://preeti1215.github.io/PreetVivah/.
+- Deploy: commit and push to `main`; GitHub Pages refreshes in a minute or two. Live at https://preetivivek2026.github.io/PreetVivah/.
 - **Rule: run the `verify-site` skill (`.claude/skills/verify-site/`) after every change, before committing or pushing:** `bash .claude/skills/verify-site/verify.sh --local` (scripts parse, `RSVP_SHEET_URL` set, assets exist). Do not commit or push while it fails. Then run it again without `--local` after every push to confirm the deploy landed (both `index.html` and `hi.html`) and all assets load.
 - Event details (dates, times, venue) appear in several places: hero text, the countdown `target` (~line 1597), the Google Calendar and Maps links, the itinerary, and the RSVP day/time options. Update them all together.
 - README.md says to upload a `.nojekyll` file, but it is not in the repo.
